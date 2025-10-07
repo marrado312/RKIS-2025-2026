@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Data;
 
 namespace TodoList
 {
@@ -17,11 +17,11 @@ namespace TodoList
             Console.Write("Введите вашу дату рождения: ");
             string birthday = Console.ReadLine();
 
-            int birthday = int.Parse(Birthday);
+            int number = int.Parse(birthday);
 
             int nowYear = DateTime.Now.Year;
 
-            int age = nowYear - Birthday;
+            int age = nowYear - number;
 
             Console.WriteLine($"Добавлен пользователь {name} {lastName}, Возвраст - {age}");
         }
