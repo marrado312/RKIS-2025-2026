@@ -19,11 +19,11 @@ namespace TodoList
 
             int birthday = int.Parse(Birthday);
 
-            int NowYear = DateTime.Now.Year;
+            int nowYear = DateTime.Now.Year;
 
-            int Age = NowYear - Birthday;
+            int age = nowYear - Birthday;
 
-            Console.WriteLine($"Добавлен пользователь {Name} {LastName}, Возвраст - {Age}");
+            Console.WriteLine($"Добавлен пользователь {name} {lastName}, Возвраст - {age}");
         }
     }
 
