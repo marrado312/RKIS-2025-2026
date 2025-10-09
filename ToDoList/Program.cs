@@ -6,7 +6,7 @@ namespace TodoList
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Работу выполнил Фучаджи и Клюев");
+            Console.WriteLine("Работу выполнили Фучаджи и Клюев");
 
             Console.Write("Введите ваше имя: ");
             string name = Console.ReadLine();
@@ -32,3 +32,10 @@ namespace TodoList
             Console.WriteLine("Введите *help* для вывода доступных команд");
 
 
+            while (true)
+            {
+                Console.Write("> ");
+                var line = Console.ReadLine();
+                if (line == null || line == "exit") break;
+                Console.WriteLine("Echo: " + line);
+            }
