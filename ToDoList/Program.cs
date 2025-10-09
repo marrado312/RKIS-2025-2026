@@ -19,6 +19,12 @@ namespace TodoList
 
             int number = int.Parse(birthday);
 
+            if (number <= 0)
+            {
+                Console.WriteLine("Введите реальный возраст");
+                return;
+            }
+
             int nowYear = DateTime.Now.Year;
 
             int age = nowYear - number;
@@ -29,7 +35,7 @@ namespace TodoList
 
             string[] todos = new string[2];
             int taskCount = 0;
-            
+
 
             Console.WriteLine("Введите help для вывода доступных команд");
 
@@ -37,26 +43,26 @@ namespace TodoList
             while (true)
             {
 
-                Console.WriteLine("Введите команду:");
+                Console.Write("Введите команду:");
                 string command = Console.ReadLine();
 
-                if (command == null || command.ToLower() == "exit") break; 
-            
+                if (command == null || command.ToLower() == "exit") break;
 
-            switch(command)
-            {
-                case "help":
+
+                switch (command)
+                {
+                    case "help":
                         Console.WriteLine("Доступные команды:");
-                    Console.WriteLine("help — выводит список всех доступных команд с кратким описанием.");
-                    Console.WriteLine("profile - выводит данные пользователя в формате: <Имя> <Фамилия>, <Год рождения>.");
-                    Console.WriteLine("add — добавляет новую задачу. Формат ввода: add *Задача*");
-                    Console.WriteLine("view — выводит все задачи из массива (только непустые элементы).");
-                    Console.WriteLine("exit — завершает цикл и останавливает выполнение программы.");
-                    break;
+                        Console.WriteLine("help — выводит список всех доступных команд с кратким описанием.");
+                        Console.WriteLine("profile - выводит данные пользователя в формате: <Имя> <Фамилия>, <Год рождения>.");
+                        Console.WriteLine("add — добавляет новую задачу. Формат ввода: add *Задача*");
+                        Console.WriteLine("view — выводит все задачи из массива (только непустые элементы).");
+                        Console.WriteLine("exit — завершает цикл и останавливает выполнение программы.");
+                        break;
 
-                case "profile":
-                    Console.WriteLine($" Пользователь:{name} {lastName}, Год рождения: {age}");
-                    break;
+                    case "profile":
+                        Console.WriteLine($" Пользователь:{name} {lastName}, Год рождения: {age}");
+                        break;
 
                     case "add":
                         string[] parts = command.Split(' ');
@@ -64,7 +70,6 @@ namespace TodoList
                         if (parts.Length >= 2)
                         {
                             string task = parts[1];
-                            
 
                             if (taskCount >= todos.Length)
                             {
@@ -74,36 +79,36 @@ namespace TodoList
                                 {
                                     newTodos[i] = todos[i];
                                 }
-                            
 
-                            todos = newTodos;
+                                todos = newTodos;
                             }
-                        
 
                             todos[taskCount] = task;
                             taskCount++;
                             Console.WriteLine($"Задача добавлена: {task}");
                         }
-                else
-                {
-                    Console.WriteLine("Ошибка: используйте формат add *текст задачи*");
+                        else
+                        {
+                            Console.WriteLine("Ошибка: используйте формат add *текст задачи*");
+                        }
+                        break;
+
+                    case "view":
+                        if (taskCount == 0)
+                        {
+                            Console.WriteLine("Задач нет");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Ваши задачи: ");
+                            for (int i = 0; i < taskCount; i++)
+                            {
+                                Console.WriteLine($"{i + 1}. {todos[i]}");
+                            }
+                        }
+                        break;
                 }
-                break;
-                    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
+            }
+        }
+    }
+}
