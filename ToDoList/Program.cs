@@ -34,8 +34,23 @@ namespace TodoList
 
             while (true)
             {
-                Console.Write("> ");
-                var line = Console.ReadLine();
-                if (line == null || line == "exit") break;
-                Console.WriteLine("Echo: " + line);
+                Console.WriteLine("Введите команду:")
+                 string input = Console.ReadLine();
+
+                if (command = null || command = "exit") break;
             }
+
+                switch (command);
+                {
+                    case (help)
+                        Console.WriteLine("Доступные команды:");
+                        Console.WriteLine("help — выводит список всех доступных команд с кратким описанием.");
+                        Console.WriteLine("profile - выводит данные пользователя в формате: <Имя> <Фамилия>, <Год рождения>.");
+                        Console.WriteLine("add — добавляет новую задачу. Формат ввода: add "текст задачи".");
+                        Console.WriteLine("view — выводит все задачи из массива (только непустые элементы).");
+                        Console.WriteLine("exit — завершает цикл и останавливает выполнение программы.");
+                    break;
+
+
+
+            
