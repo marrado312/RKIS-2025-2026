@@ -28,6 +28,7 @@ namespace TodoList
 
 
             string[] todos = new string[2];
+            int taskCount = 0;
             
 
             Console.WriteLine("Введите help для вывода доступных команд");
@@ -57,7 +58,40 @@ namespace TodoList
                     Console.WriteLine($" Пользователь:{name} {lastName}, Год рождения: {age}");
                     break;
 
-                
+                    case "add":
+                        string[] parts = command.Split(' ');
+
+                        if (parts.Length >= 2)
+                        {
+                            string task = parts[1];
+                            
+
+                            if (taskCount >= todos.Length)
+                            {
+                                string[] newTodos = new string[todos.Length * 2];
+
+                                for (int i = 0; i < todos.Length; i++)
+                                {
+                                    newTodos[i] = todos[i];
+                                }
+                            
+
+                            todos = newTodos;
+                            }
+                        
+
+                            todos[taskCount] = task;
+                            taskCount++;
+                            Console.WriteLine($"Задача добавлена: {task}");
+                        }
+                else
+                {
+                    Console.WriteLine("Ошибка: используйте формат add *текст задачи*");
+                }
+                break;
+                    
+
+
 
 
 
