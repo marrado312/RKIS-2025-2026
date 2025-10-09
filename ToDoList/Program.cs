@@ -24,7 +24,11 @@ namespace TodoList
             int age = nowYear - number;
 
             Console.WriteLine($"Добавлен пользователь {name} {lastName}, Возвраст - {age}");
-        }
-    }
 
-}
+
+
+            sting[] todos = new string[2];
+
+            Console.WriteLine("Введите *help* для вывода доступных команд");
+
+
