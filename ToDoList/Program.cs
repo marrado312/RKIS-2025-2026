@@ -90,7 +90,6 @@ namespace TodoList
                 if (taskCount >= todos.Length)
                 {
                     string[] newTodos = new string[todos.Length * 2];
-
                     bool[] newStatuses = new bool[statuses.Length * 2];
                     DateTime[] newDates = new DateTime[dates.Length * 2];
 
@@ -107,9 +106,9 @@ namespace TodoList
                 }
 
                 todos[taskCount] = task;
-                taskCount++;
                 statuses[taskCount - 1] = false;
                 dates[taskCount - 1] = DateTime.Now;
+                taskCount++;
                 Console.WriteLine($"Задача добавлена: {task}");
             }
             else
@@ -129,8 +128,9 @@ namespace TodoList
                 for (int i = 0; i < taskCount; i++)
 
                 {
-                    string status = statuses[i] ? "Выполнено" : "Не выполнено";
-                    Console.WriteLine($"{i + 1}. {todos[i]} | {status} | {dates[i]:dd.MM.yyyy}");
+                    string statusText = statuses[i] ? "сделано" : "не сделано";
+                    string dateText = dates[i].ToString("dd.MM.yyyy");
+                    Console.WriteLine($"{i + 1} {todos[i]} {statusText} {dateText}");
                 }
             }
             
