@@ -91,9 +91,9 @@ namespace TodoList
         {
             Console.WriteLine($" Пользователь:{userName} {userLastName}, Год рождения: {userAge}");
         }
-        static void addCommand(string UserCommand)
+        static void addCommand(string userCommand)
         {
-            string[] parts = UserCommand.Split(' ');
+            string[] parts = userCommand.Split('"');
 
             if (parts.Length >= 2)
             {
