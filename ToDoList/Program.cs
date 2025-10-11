@@ -9,6 +9,8 @@ namespace TodoList
         static int userAge;
         static string[] todos = new string[2];
         static int taskCount = 0;
+        static bool[] statuses = new bool[2];
+        static DateTime[] dates = new DateTime[2];
         static void Main(string[] args)
         {
             Console.WriteLine("Работу выполнили Фучаджи и Клюев");
@@ -36,7 +38,7 @@ namespace TodoList
                 }
                 else if (userCommand == "add")
                 {
-                    addCommand(UserCommand);
+                    addCommand(userCommand);
                 }
                 else if (userCommand == "view")
                 {
@@ -79,7 +81,7 @@ namespace TodoList
         }
         static void addCommand(string UserCommand)
         {
-            string[] parts = userCommand.Split(' ');
+            string[] parts = UserCommand.Split(' ');
 
             if (parts.Length >= 2)
             {
@@ -89,16 +91,25 @@ namespace TodoList
                 {
                     string[] newTodos = new string[todos.Length * 2];
 
+                    bool[] newStatuses = new bool[statuses.Length * 2];
+                    DateTime[] newDates = new DateTime[dates.Length * 2];
+
                     for (int i = 0; i < todos.Length; i++)
                     {
                         newTodos[i] = todos[i];
+                        newStatuses[i] = statuses[i];
+                        newDates[i] = dates[i];
                     }
 
                     todos = newTodos;
+                    statuses = newStatuses;
+                    dates = newDates;
                 }
 
                 todos[taskCount] = task;
                 taskCount++;
+                statuses[taskCount - 1] = false;
+                dates[taskCount - 1] = DateTime.Now;
                 Console.WriteLine($"Задача добавлена: {task}");
             }
             else
@@ -118,7 +129,8 @@ namespace TodoList
                 for (int i = 0; i < taskCount; i++)
 
                 {
-                    Console.WriteLine($"{i + 1}. {todos[i]}");
+                    string status = statuses[i] ? "Выполнено" : "Не выполнено";
+                    Console.WriteLine($"{i + 1}. {todos[i]} | {status} | {dates[i]:dd.MM.yyyy}");
                 }
             }
             
