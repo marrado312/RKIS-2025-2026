@@ -9,29 +9,27 @@ namespace TodoList
             Console.WriteLine("Работу выполнили Фучаджи и Клюев");
 
             Console.Write("Введите ваше имя: ");
-            string name = Console.ReadLine();
+            string userName = Console.ReadLine();
 
             Console.Write("Введите вашу Фамилию: ");
-            string lastName = Console.ReadLine();
+            string userLastName = Console.ReadLine();
 
             Console.Write("Введите вашу дату рождения: ");
-            string birthday = Console.ReadLine();
+            string birthYearInput = Console.ReadLine();
 
-            int number = int.Parse(birthday);
+            int birthYear = int.Parse(birthYearInput);
 
-            if (number <= 0)
+            if (birthYear <= 0)
             {
                 Console.WriteLine("Введите реальный возраст");
                 return;
             }
 
-            int nowYear = DateTime.Now.Year;
+            int currentYear = DateTime.Now.Year;
 
-            int age = nowYear - number;
+            int userAge = currentYear - birthYear;
 
-            Console.WriteLine($"Добавлен пользователь {name} {lastName}, Возвраст - {age}");
-
-
+            Console.WriteLine($"Добавлен пользователь {userName} {userLastName}, Возвраст - {userAge}");
 
             string[] todos = new string[2];
             int taskCount = 0;
@@ -44,12 +42,11 @@ namespace TodoList
             {
 
                 Console.Write("Введите команду:");
-                string command = Console.ReadLine();
+                string userCommand = Console.ReadLine();
 
-                if (command == null || command.ToLower() == "exit") break;
+                if (userCommand == null || userCommand.ToLower() == "exit") break;
 
-
-                switch (command)
+                switch (userCommand)
                 {
                     case "help":
                         Console.WriteLine("Доступные команды:");
@@ -61,11 +58,11 @@ namespace TodoList
                         break;
 
                     case "profile":
-                        Console.WriteLine($" Пользователь:{name} {lastName}, Год рождения: {age}");
+                        Console.WriteLine($" Пользователь:{userName} {userLastName}, Год рождения: {userAge}");
                         break;
 
                     case "add":
-                        string[] parts = command.Split(' ');
+                        string[] parts = userCommand.Split(' ');
 
                         if (parts.Length >= 2)
                         {
