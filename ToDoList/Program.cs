@@ -56,6 +56,10 @@ namespace TodoList
                 {
                     CommandUpdate(CommandUser);
                 }
+                else if (CommandUser.StartsWith("view"))
+                {
+                    CommandView();
+                }
             }
         }
         static void CreateUser()
@@ -97,46 +101,75 @@ namespace TodoList
         }
         static void CommandAdd(string CommandUser)
         {
-            string[] parts = CommandUser.Split('"');
+            bool multiline = CommandUser.Contains("--multiline") || CommandUser.Contains("-m");
+            bool urgent = CommandUser.Contains("--urgent") || CommandUser.Contains("-u");
 
-            if (parts.Length >= 2)
+            string task = "";
+            if (multiline)
             {
-                string task = parts[1];
-
-                if (taskCount >= todos.Length)
+                Console.WriteLine("Введите задачу (для завершения введите пустую строку):");
+                string line;
+                while (!string.IsNullOrWhiteSpace(line = Console.ReadLine()))
                 {
-                    ResizeArrays();
+                    task += line + Environment.NewLine;
                 }
-
-                todos[taskCount] = task;
-                statuses[taskCount] = false;
-                dates[taskCount] = DateTime.Now;
-                taskCount++;
-                Console.WriteLine($"Задача добавлена: {task}");
+                task = task.TrimEnd();
             }
             else
             {
-                Console.WriteLine("Ошибка: используйте формат add *текст задачи*");
-            }
-        }
-        static void CommandView()
-        {
-            if (taskCount == 0)
-            {
-                Console.WriteLine("Задач нет");
-            }
-            else
-            {
-                Console.WriteLine("Ваши задачи: ");
-                for (int i = 0; i < taskCount; i++)
-
+                string[] parts = CommandUser.Split('"');
+                if (parts.Length >= 2)
                 {
-                    string statusText = statuses[i] ? "сделано" : "не сделано";
-                    string dateText = dates[i].ToString("dd.MM.yyyy");
-                    Console.WriteLine($"{i + 1} {todos[i]} {statusText} {dateText}");
+                    task = parts[1];
+                }
+                else
+                {
+                    Console.WriteLine("Ошибка: используйте формат add *текст задачи* или add --multiline");
+                    return;
                 }
             }
+            if (taskCount >= todos.Length)
+            {
+                ResizeArrays();
+            }
+            todos[taskCount] = task;
+            statuses[taskCount] = true;
+            dates[taskCount] = DateTime.Now;
+            if (urgent)
+            {
+                todos[taskCount] = "[Срочно] " + todos[taskCount];
+            }
+            taskCount++;
+            Console.WriteLine($"Задача добавлена: {task}");
         }
+    
+
+
+
+
+
+
+
+
+
+            static void CommandView()
+                {
+                    if (taskCount == 0)
+                    {
+                        Console.WriteLine("Задач нет");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ваши задачи: ");
+                        for (int i = 0; i < taskCount; i++)
+
+                        {
+                            string statusText = statuses[i] ? "сделано" : "не сделано";
+                            string dateText = dates[i].ToString("dd.MM.yyyy");
+                            Console.WriteLine($"{i + 1} {todos[i]} {statusText} {dateText}");
+                        }
+                    }
+                }
 
         static void CommandDone(string CommandUser)
         {
