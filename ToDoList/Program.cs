@@ -93,7 +93,6 @@ namespace TodoList
             Console.WriteLine("delete — удаляет задачу по индексу");
             Console.WriteLine("update — обновляет текст задачи");
             Console.WriteLine("exit — завершает цикл и останавливает выполнение программы.");
-
         }
         static void CommandProfile()
         {
