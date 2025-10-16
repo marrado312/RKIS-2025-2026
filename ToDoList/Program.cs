@@ -23,7 +23,7 @@ namespace TodoList
 
             int age = nowYear - Birthday;
 
-            Console.WriteLine($"Добавлен пользователь {name} {lastName}, Возвраст - {age}");
+            Console.WriteLine($"добавлен пользователь {name} {lastName}, Возвраст - {age}");
         }
     }
 
