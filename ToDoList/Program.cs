@@ -4,9 +4,9 @@ namespace TodoList
 {
     class Program
     {
-        static string userName;
-        static string userLastName;
-        static int userAge;
+        static string UserName;
+        static string UserLastName;
+        static int UserAge;
         static string[] todos = new string[2];
         static int taskCount = 0;
         static bool[] statuses = new bool[2];
@@ -15,7 +15,7 @@ namespace TodoList
         {
             Console.WriteLine("Работу выполнили Фучаджи и Клюев");
 
-            userCreate();
+            CreateUser();
 
             Console.WriteLine("Введите help для вывода доступных команд");
 
@@ -24,76 +24,80 @@ namespace TodoList
             {
 
                 Console.Write("Введите команду:");
-                string userCommand = Console.ReadLine();
+                string CommandUser = Console.ReadLine();
 
-                if (userCommand == null || userCommand.ToLower() == "exit") break;
+                if (CommandUser == null || CommandUser.ToLower() == "exit") break;
 
-                if (userCommand == "help")
+                if (CommandUser == "help")
                 {
-                    helpCommand();
+                    CommandHelp();
                 }
-                else if (userCommand == "profile")
+                else if (CommandUser == "profile")
                 {
-                    profileCommand();
+                    CommandProfile();
                 }
-                else if (userCommand == "add")
+                else if (CommandUser == "add")
                 {
-                    addCommand(userCommand);
+                    CommandAdd(CommandUser);
                 }
-                else if (userCommand == "view")
+                else if (CommandUser == "view")
                 {
-                    viewCommand();
+                    CommandView();
                 }
-                else if (userCommand.StartsWith("done "))
+                else if (CommandUser.StartsWith("done "))
                 {
-                    doneCommand(userCommand);
+                    CommandDone(CommandUser);
                 }
-                else if (userCommand.StartsWith("delete "))
+                else if (CommandUser.StartsWith("delete "))
                 {
-                    deleteCommand(userCommand);
+                    CommandDelete(CommandUser);
                 }
-                else if (userCommand.StartsWith("update "))
+                else if (CommandUser.StartsWith("update "))
                 {
-                    updateCommand(userCommand);
+                    CommandUpdate(CommandUser);
                 }
             }
         }
-        static void userCreate()
+        static void CreateUser()
         {
             Console.Write("Введите ваше имя: ");
-            userName = Console.ReadLine();
+            UserName = Console.ReadLine();
             Console.Write("Введите вашу Фамилию: ");
-            userLastName = Console.ReadLine();
+            UserLastName = Console.ReadLine();
 
             Console.Write("Введите вашу дату рождения: ");
-            string birthYearInput = Console.ReadLine();
-            int birthYear = int.Parse(birthYearInput);
-            if (birthYear <= 0)
+            string BirthYearInput = Console.ReadLine();
+            int BirthYear = int.Parse(BirthYearInput);
+            if (BirthYear <= 0)
             {
                 Console.WriteLine("Введите реальный возраст");
                 return;
             }
-            int currentYear = DateTime.Now.Year;
-            userAge = currentYear - birthYear;
+            int CurrentYear = DateTime.Now.Year;
+            UserAge = CurrentYear - BirthYear;
 
-            Console.WriteLine($"Добавлен пользователь {userName} {userLastName}, Возвраст - {userAge}");
+            Console.WriteLine($"Добавлен пользователь {UserName} {UserLastName}, Возвраст - {UserAge}");
         }
-        static void helpCommand()
+        static void CommandHelp()
         {
             Console.WriteLine("Доступные команды:");
             Console.WriteLine("help — выводит список всех доступных команд с кратким описанием.");
             Console.WriteLine("profile - выводит данные пользователя в формате: <Имя> <Фамилия>, <Год рождения>.");
             Console.WriteLine("add — добавляет новую задачу. Формат ввода: add *Задача*");
             Console.WriteLine("view — выводит все задачи из массива (только непустые элементы).");
+            Console.WriteLine("done — отмечает задачу выполненной.");
+            Console.WriteLine("delete — удаляет задачу по индексу");
+            Console.WriteLine("update — обновляет текст задачи");
             Console.WriteLine("exit — завершает цикл и останавливает выполнение программы.");
+
         }
-        static void profileCommand()
+        static void CommandProfile()
         {
-            Console.WriteLine($" Пользователь:{userName} {userLastName}, Год рождения: {userAge}");
+            Console.WriteLine($" Пользователь:{UserName} {UserLastName}, Год рождения: {UserAge}");
         }
-        static void addCommand(string userCommand)
+        static void CommandAdd(string CommandUser)
         {
-            string[] parts = userCommand.Split('"');
+            string[] parts = CommandUser.Split('"');
 
             if (parts.Length >= 2)
             {
@@ -115,7 +119,7 @@ namespace TodoList
                 Console.WriteLine("Ошибка: используйте формат add *текст задачи*");
             }
         }
-        static void viewCommand()
+        static void CommandView()
         {
             if (taskCount == 0)
             {
@@ -134,9 +138,9 @@ namespace TodoList
             }
         }
 
-        static void doneCommand(string userCommand)
+        static void CommandDone(string CommandUser)
         {
-            string[] parts = userCommand.Split(' ');
+            string[] parts = CommandUser.Split(' ');
             if (parts.Length >= 2 && int.TryParse(parts[1], out int index))
             {
                 index--;
@@ -157,9 +161,9 @@ namespace TodoList
             }
         }
 
-        static void deleteCommand(string userCommand)
+        static void CommandDelete(string CommandUser)
         {
-            string[] parts = userCommand.Split(' ');
+            string[] parts = CommandUser.Split(' ');
             if (parts.Length >= 2 && int.TryParse(parts[1], out int index))
             {
                 index--;
@@ -185,19 +189,19 @@ namespace TodoList
             }
         }
 
-        static void updateCommand(string userCommand)
+        static void CommandUpdate(string CommandUser)
         {
-            int firstQuote = userCommand.IndexOf('"');
-            int secondQuote = userCommand.LastIndexOf('"');
+            int firstQuote = CommandUser.IndexOf('"');
+            int secondQuote = CommandUser.LastIndexOf('"');
             if (firstQuote != -1 && secondQuote != -1 && firstQuote != secondQuote)
             {
-                string indexPart = userCommand.Substring(7, firstQuote - 7).Trim();
+                string indexPart = CommandUser.Substring(7, firstQuote - 7).Trim();
                 if (int.TryParse(indexPart, out int index))
                 {
                     index--;
                     if (index >= 0 && index < taskCount)
                     {
-                        string newText = userCommand.Substring(firstQuote + 1, secondQuote - firstQuote - 1);
+                        string newText = CommandUser.Substring(firstQuote + 1, secondQuote - firstQuote - 1);
                         todos[index] = newText;
                         dates[index] = DateTime.Now;
                         Console.WriteLine($"Задача {index + 1} обновлена: {newText}");
