@@ -144,9 +144,6 @@ namespace TodoList
         }
     
 
-<<<<<<< HEAD
-            Console.WriteLine($"добавлен пользователь {name} {lastName}, Возвраст - {age}");
-=======
 
 
 
@@ -275,7 +272,6 @@ namespace TodoList
             todos = newTodos;
             statuses = newStatuses;
             dates = newDates;
->>>>>>> 79c146589d33963c62f57b38073602ae94a21f6a
         }
     }
  }
