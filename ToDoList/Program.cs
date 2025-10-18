@@ -37,7 +37,7 @@ namespace TodoList
                 {
                     CommandProfile();
                 }
-                else if (CommandUser == "add")
+                else if (CommandUser.StartsWith("add"))
                 {
                     CommandAdd(CommandUser);
                 }
@@ -59,7 +59,7 @@ namespace TodoList
                 }
                 else if (CommandUser.StartsWith("view"))
                 {
-                    CommandView();
+                    CommandView(CommandUser);
                 }
 
             }
@@ -155,10 +155,11 @@ namespace TodoList
             }
             else
             {
-                string[] parts = CommandUser.Split('"');
-                if (parts.Length >= 2)
+                int firstStar = CommandUser.IndexOf('*');
+                int lastStar = CommandUser.LastIndexOf('*');
+                if (firstStar != -1 && lastStar != -1 && firstStar != lastStar)
                 {
-                    task = parts[1];
+                    task = CommandUser.Substring(firstStar + 1, lastStar - firstStar - 1);
                 }
                 else
                 {
@@ -171,7 +172,7 @@ namespace TodoList
                 ResizeArrays();
             }
             todos[taskCount] = task;
-            statuses[taskCount] = true;
+            statuses[taskCount] = false;
             dates[taskCount] = DateTime.Now;
             if (isUrgent)
             {
