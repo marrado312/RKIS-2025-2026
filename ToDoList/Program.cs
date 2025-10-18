@@ -92,7 +92,14 @@ namespace TodoList
             Console.WriteLine("help — выводит список всех доступных команд с кратким описанием.");
             Console.WriteLine("profile - выводит данные пользователя в формате: <Имя> <Фамилия>, <Год рождения>.");
             Console.WriteLine("add — добавляет новую задачу. Формат ввода: add *Задача*");
+            Console.WriteLine("  --multiline/-m - многострочный ввод");
+            Console.WriteLine("  --urgent/-u - срочная задача");
             Console.WriteLine("view — выводит все задачи из массива (только непустые элементы).");
+            Console.WriteLine("  --index/-i - показывать индекс задачи");
+            Console.WriteLine("  --status/-s - показывать статус задачи");
+            Console.WriteLine("  --update-date/-d - выводить дату изменения");
+            Console.WriteLine("  --all/-a - выводить все данные");
+            Console.WriteLine("read - просмотреть полный текст задачи по номеру");
             Console.WriteLine("done — отмечает задачу выполненной.");
             Console.WriteLine("delete — удаляет задачу по индексу");
             Console.WriteLine("update — обновляет текст задачи");
