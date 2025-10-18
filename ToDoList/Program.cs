@@ -299,17 +299,15 @@ namespace TodoList
 
         static void CommandUpdate(string CommandUser)
         {
-            int firstQuote = CommandUser.IndexOf('"');
-            int secondQuote = CommandUser.LastIndexOf('"');
-            if (firstQuote != -1 && secondQuote != -1 && firstQuote != secondQuote)
+            string[] parts = CommandUser.Split(' ', 3);
+            if (parts.Length >= 3)
             {
-                string indexPart = CommandUser.Substring(7, firstQuote - 7).Trim();
-                if (int.TryParse(indexPart, out int index))
+                if (int.TryParse(parts[1], out int index))
                 {
                     index--;
                     if (index >= 0 && index < taskCount)
                     {
-                        string newText = CommandUser.Substring(firstQuote + 1, secondQuote - firstQuote - 1);
+                        string newText = parts[2].Trim('"');
                         todos[index] = newText;
                         dates[index] = DateTime.Now;
                         Console.WriteLine($"Задача {index + 1} обновлена: {newText}");
@@ -321,12 +319,12 @@ namespace TodoList
                 }
                 else
                 {
-                    Console.WriteLine("Ошибка: используйте формат update <номер_задачи> *новый текст*");
+                    Console.WriteLine("Ошибка: используйте формат update *номер_задачи* \"новый текст\"");
                 }
             }
             else
             {
-                Console.WriteLine("Ошибка: используйте формат update <номер_задачи> *новый текст*");
+                Console.WriteLine("Ошибка: используйте формат update *номер_задачи* \"новый текст\"");
             }
         }
 
