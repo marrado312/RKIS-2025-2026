@@ -41,10 +41,6 @@ namespace TodoList
                 {
                     CommandAdd(CommandUser);
                 }
-                else if (CommandUser == "view")
-                {
-                    CommandView();
-                }
                 else if (CommandUser.StartsWith("done "))
                 {
                     CommandDone(CommandUser);
@@ -160,24 +156,95 @@ namespace TodoList
             Console.WriteLine($"Задача добавлена: {task}");
         }
 
-            static void CommandView()
-                {
-                    if (taskCount == 0)
-                    {
-                        Console.WriteLine("Задач нет");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Ваши задачи: ");
-                        for (int i = 0; i < taskCount; i++)
+        static void CommandView(string CommandUser = "")
+        {
+            if (taskCount == 0)
+            {
+                Console.WriteLine("Задач нет");
+                return;
+            }
 
+            bool showIndex = CommandUser.Contains("--index") || CommandUser.Contains("-i");
+            bool showStatus = CommandUser.Contains("--status") || CommandUser.Contains("-s");
+            bool showUpdateDate = CommandUser.Contains("--update-date") || CommandUser.Contains("-d");
+            bool showAll = CommandUser.Contains("--all") || CommandUser.Contains("-a");
+
+            if (CommandUser.Contains("-") && CommandUser.Length >= 2)
+            {
+                int flagIndex = CommandUser.IndexOf('-');
+                if (flagIndex + 1 < CommandUser.Length)
+                {
+                    string flagsPart = CommandUser.Substring(flagIndex + 1);
+                    string[] words = flagsPart.Split(' ');
+                    if (words.Length > 0 && words[0].Length > 0)
+                    {
+                        string flags = words[0];
+                        if (flags.Length > 0 && flags[0] != '-')
                         {
-                            string statusText = statuses[i] ? "сделано" : "не сделано";
-                            string dateText = dates[i].ToString("dd.MM.yyyy");
-                            Console.WriteLine($"{i + 1} {todos[i]} {statusText} {dateText}");
+                            foreach (char flag in flags)
+                            {
+                                if (flag == 'i') showIndex = true;
+                                else if (flag == 's') showStatus = true;
+                                else if (flag == 'd') showUpdateDate = true;
+                                else if (flag == 'a') showAll = true;
+                            }
                         }
                     }
                 }
+            }
+
+            if (showAll)
+            {
+                showIndex = true;
+                showStatus = true;
+                showUpdateDate = true;
+            }
+
+            if (!showIndex && !showStatus && !showUpdateDate && !showAll)
+            {
+                Console.WriteLine("Ваши задачи:");
+                for (int i = 0; i < taskCount; i++)
+                {
+                    string shortTask = todos[i].Length > 30 ? todos[i].Substring(0, 30) + "..." : todos[i];
+                    Console.WriteLine($"  {shortTask}");
+                }
+                return;
+            }
+
+            Console.WriteLine("Ваши задачи:");
+
+            string header = "|";
+            string separator = "|";
+
+            if (showIndex) { header += " Индекс  |"; separator += "---------|"; }
+            if (showStatus) { header += " Статус       |"; separator += "--------------|"; }
+            if (showUpdateDate) { header += " Дата изменения |"; separator += "-----------------|"; }
+            header += " Задача                             |";
+            separator += "------------------------------------|";
+            Console.WriteLine(header);
+            Console.WriteLine(separator);
+
+            for (int i = 0; i < taskCount; i++)
+            {
+                string row = "|";
+
+                if (showIndex)
+                    row += $" {(i + 1),-7}|";
+
+                if (showStatus)
+                    row += $" {(statuses[i] ? "Сделано" : "Не сделано"),-12}|";
+
+                if (showUpdateDate)
+                    row += $" {dates[i]:dd.MM.yyyy HH:mm} |";
+
+                string shortTask = todos[i].Replace("\n", " ");
+                if (shortTask.Length > 30)
+                    shortTask = shortTask.Substring(0, 30) + "...";
+                row += $" {shortTask,-33}|";
+
+                Console.WriteLine(row);
+            }
+        }      
 
         static void CommandDone(string CommandUser)
         {
