@@ -53,10 +53,15 @@ namespace TodoList
                 {
                     CommandUpdate(CommandUser);
                 }
+                else if (CommandUser.StartsWith("read "))
+                {
+                    CommandRead(CommandUser);
+                }
                 else if (CommandUser.StartsWith("view"))
                 {
                     CommandView();
                 }
+
             }
         }
 
@@ -325,6 +330,33 @@ namespace TodoList
             else
             {
                 Console.WriteLine("Ошибка: используйте формат update *номер_задачи* \"новый текст\"");
+            }
+        }
+
+        static void CommandRead(string CommandUser)
+        {
+            string[] parts = CommandUser.Split(' ');
+            if (parts.Length >= 2 && int.TryParse(parts[1], out int index))
+            {
+                index--;
+                if (index >= 0 && index < taskCount)
+                {
+                    string statusText = statuses[index] ? "выполнена" : "не выполнена";
+                    string dateText = dates[index].ToString("dd.MM.yyyy HH:mm");
+
+                    Console.WriteLine($"Задача {index + 1}:");
+                    Console.WriteLine($"Текст: {todos[index]}");
+                    Console.WriteLine($"Статус: {statusText}");
+                    Console.WriteLine($"Дата изменения: {dateText}");
+                }
+                else
+                {
+                    Console.WriteLine("Ошибка: неверный индекс задачи");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Ошибка: используйте формат read <номер_задачи>");
             }
         }
 
