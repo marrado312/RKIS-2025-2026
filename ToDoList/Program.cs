@@ -236,17 +236,34 @@ namespace TodoList
                 }
                 return;
             }
-
             Console.WriteLine("Ваши задачи:");
+
+            int indexWidth = 8;
+            int statusWidth = 14;
+            int dateWidth = 16;
+            int taskWidth = 36;
 
             string header = "|";
             string separator = "|";
 
-            if (showIndex) { header += " Индекс  |"; separator += "---------|"; }
-            if (showStatus) { header += " Статус       |"; separator += "--------------|"; }
-            if (showUpdateDate) { header += " Дата изменения |"; separator += "-----------------|"; }
-            header += " Задача                             |";
-            separator += "------------------------------------|";
+            if (showIndex)
+            {
+                header += " Индекс".PadRight(indexWidth) + " |";
+                separator += new string('-', indexWidth + 2) + "|";
+            }
+            if (showStatus)
+            {
+                header += " Статус".PadRight(statusWidth) + " |";
+                separator += new string('-', statusWidth + 2) + "|";
+            }
+            if (showUpdateDate)
+            {
+                header += " Дата".PadRight(dateWidth) + " |";
+                separator += new string('-', dateWidth + 2) + "|";
+            }
+            header += " Задача".PadRight(taskWidth) + " |";
+            separator += new string('-', taskWidth + 2) + "|";
+
             Console.WriteLine(header);
             Console.WriteLine(separator);
 
@@ -255,22 +272,21 @@ namespace TodoList
                 string row = "|";
 
                 if (showIndex)
-                    row += $" {(i + 1),-7}|";
+                    row += $" {i + 1}".PadRight(indexWidth) + " |";
 
                 if (showStatus)
-                    row += $" {(statuses[i] ? "Сделано" : "Не сделано"),-12}|";
+                    row += $" {(statuses[i] ? "Сделано" : "Не сделано")}".PadRight(statusWidth) + " |";
 
                 if (showUpdateDate)
-                    row += $" {dates[i]:dd.MM.yyyy HH:mm} |";
+                    row += $" {dates[i]:dd.MM.yyyy HH:mm}".PadRight(dateWidth) + " |";
 
                 string shortTask = todos[i].Replace("\n", " ");
-                if (shortTask.Length > 30)
-                    shortTask = shortTask.Substring(0, 30) + "...";
-                row += $" {shortTask,-33}|";
-
+                if (shortTask.Length > taskWidth - 2)
+                    shortTask = shortTask.Substring(0, taskWidth - 3) + "...";
+                row += $" {shortTask}".PadRight(taskWidth) + " |";
                 Console.WriteLine(row);
             }
-        }      
+        }
 
         static void CommandDone(string CommandUser)
         {
