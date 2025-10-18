@@ -69,8 +69,14 @@ namespace TodoList
         {
             Console.Write("Введите ваше имя: ");
             userName = Console.ReadLine();
+            if (string.IsNullOrEmpty(userName))
+            {
+                Console.WriteLine("Имя не может быть пустым");
+                return;
+            }
+
             Console.Write("Введите вашу Фамилию: ");
-            userLastName = Console.ReadLine();
+            userName = Console.ReadLine();
 
             Console.Write("Введите вашу дату рождения: ");
             string BirthYearInput = Console.ReadLine();
@@ -111,6 +117,13 @@ namespace TodoList
         }
         static void CommandAdd(string CommandUser)
         {
+            if (string.IsNullOrEmpty(CommandUser))
+            {
+                Console.WriteLine("Ошибка: пустая команда");
+                return;
+            }
+        
+
             bool isMultiline = CommandUser.Contains("--multiline") || CommandUser.Contains("-m");
             bool isUrgent = CommandUser.Contains("--urgent") || CommandUser.Contains("-u");
 
