@@ -94,23 +94,18 @@ namespace TodoList
 
         static void CommandHelp()
         {
-            Console.WriteLine("Доступные команды:");
-            Console.WriteLine("help — выводит список всех доступных команд с кратким описанием.");
-            Console.WriteLine("profile - выводит данные пользователя в формате: <Имя> <Фамилия>, <Год рождения>.");
-            Console.WriteLine("add — добавляет новую задачу. Формат ввода: add *Задача*");
-            Console.WriteLine("  --multiline/-m - многострочный ввод");
-            Console.WriteLine("  --urgent/-u - срочная задача");
-            Console.WriteLine("view — выводит все задачи из массива (только непустые элементы).");
-            Console.WriteLine("  --index/-i - показывать индекс задачи");
-            Console.WriteLine("  --status/-s - показывать статус задачи");
-            Console.WriteLine("  --update-date/-d - выводить дату изменения");
-            Console.WriteLine("  --all/-a - выводить все данные");
-            Console.WriteLine("read - просмотреть полный текст задачи по номеру");
-            Console.WriteLine("done — отмечает задачу выполненной.");
-            Console.WriteLine("delete — удаляет задачу по индексу");
-            Console.WriteLine("update — обновляет текст задачи");
-            Console.WriteLine("exit — завершает цикл и останавливает выполнение программы.");
+            Console.WriteLine(@"Доступные команды:
+        help - справка по командам
+        profile - данные пользователя
+        add - добавить задачу (--multiline/-m, --urgent/-u)
+        view - список задач (--index/-i, --status/-s, --update-date/-d, --all/-a)
+        read - полный текст задачи
+        done - отметить выполненной
+        delete - удалить задачу
+        update - изменить текст задачи
+        exit - выход из программы");
         }
+
         static void CommandProfile()
         {
             Console.WriteLine($" Пользователь:{userName} {userLastName}, Год рождения: {userAge}");
@@ -155,15 +150,14 @@ namespace TodoList
             }
             else
             {
-                int firstStar = CommandUser.IndexOf('*');
-                int lastStar = CommandUser.LastIndexOf('*');
-                if (firstStar != -1 && lastStar != -1 && firstStar != lastStar)
+                string[] parts = CommandUser.Split('"');
+                if (parts.Length >= 2)
                 {
-                    task = CommandUser.Substring(firstStar + 1, lastStar - firstStar - 1);
+                    task = parts[1];
                 }
                 else
                 {
-                    Console.WriteLine("Ошибка: используйте формат add *текст задачи* или add --multiline");
+                    Console.WriteLine("Ошибка: используйте формат add \"текст задачи\" или add --multiline");
                     return;
                 }
             }
@@ -280,7 +274,7 @@ namespace TodoList
                 if (showUpdateDate)
                     row += $" {dates[i]:dd.MM.yyyy HH:mm}".PadRight(dateWidth) + " |";
 
-                string shortTask = todos[i].Replace("\n", " ");
+                string shortTask = todos[i].Replace("\n", " ").Replace("\r", "");
                 if (shortTask.Length > taskWidth - 2)
                     shortTask = shortTask.Substring(0, taskWidth - 3) + "...";
                 row += $" {shortTask}".PadRight(taskWidth) + " |";
