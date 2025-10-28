@@ -4,58 +4,40 @@ namespace TodoList
 {
     class TodoItem
     {
-        private string text;
-        private bool isDone;
-        private DateTime lastUpdate;
+        public string Text { get; private set; }
+        public bool IsDone { get; private set; }
+        public DateTime LastUpdate { get; private set; }
 
-        public string Text
-        {
-            get { return text; }
-            private set { text = value; }
-        }
-
-        public bool IsDone
-        {
-            get { return isDone; }
-            private set { isDone = value; }
-        }
-
-        public DateTime LastUpdate
-        {
-            get { return lastUpdate; }
-            private set { lastUpdate = value; }
-        }
         public TodoItem(string text)
         {
-            this.text = text;
-            this.isDone = false;
-            this.lastUpdate = DateTime.Now;
+            this.Text = text;
+            this.IsDone = false;
+            this.LastUpdate = DateTime.Now;
         }
         public void MarkDone()
         {
-            this.isDone = true;
-            this.lastUpdate = DateTime.Now;
+            this.IsDone = true;
+            this.LastUpdate = DateTime.Now;
         }
 
         public void UpdateText(string newText)
         {
-            this.text = newText;
-            this.lastUpdate = DateTime.Now;
+            this.Text = newText;
+            this.LastUpdate = DateTime.Now;
         }
 
         public string GetShortInfo()
         {
-            string shortText = text.Length > 30 ? text.Substring(0, 30) + "..." : text;
-            string status = isDone ? "Сделано" : "Не сделано";
-            string date = lastUpdate.ToString("dd.MM.yyyy HH:mm");
+            string shortText = Text.Length > 30 ? Text.Substring(0, 30) + "..." : Text;
+            string status = IsDone ? "Сделано" : "Не сделано";
+            string date = LastUpdate.ToString("dd.MM.yyyy HH:mm");
             return $"{shortText} | {status} | {date}";
         }
         public string GetFullInfo()
         {
-            string statusText = isDone ? "выполнена" : "не выполнена";
-            string dateText = lastUpdate.ToString("dd.MM.yyyy HH:mm");
-            return $"Текст: {text}\nСтатус: {statusText}\nДата изменения: {dateText}";
+            string statusText = IsDone ? "выполнена" : "не выполнена";
+            string dateText = LastUpdate.ToString("dd.MM.yyyy HH:mm");
+            return $"Текст: {Text}\nСтатус: {statusText}\nДата изменения: {dateText}";
         }
     }
 }
-

@@ -25,38 +25,21 @@ namespace TodoList
                 if (CommandUser == null || CommandUser.ToLower() == "exit") break;
 
                 if (CommandUser == "help")
-                {
                     CommandHelp();
-                }
                 else if (CommandUser == "profile")
-                {
                     CommandProfile();
-                }
                 else if (CommandUser.StartsWith("add"))
-                {
                     CommandAdd(CommandUser);
-                }
                 else if (CommandUser.StartsWith("done "))
-                {
                     CommandDone(CommandUser);
-                }
                 else if (CommandUser.StartsWith("delete "))
-                {
                     CommandDelete(CommandUser);
-                }
                 else if (CommandUser.StartsWith("update "))
-                {
                     CommandUpdate(CommandUser);
-                }
                 else if (CommandUser.StartsWith("read "))
-                {
                     CommandRead(CommandUser);
-                }
                 else if (CommandUser.StartsWith("view"))
-                {
                     CommandView(CommandUser);
-                }
-
             }
         }
 

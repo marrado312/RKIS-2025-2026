@@ -4,38 +4,20 @@ namespace TodoList
 {
     class Profile
     {
-        private string firstName;
-        private string lastName;
-        private int birthYear;
-
-        public string FirstName
-        {
-            get { return firstName; }
-            private set { firstName = value; }
-        }
-        public string LastName
-        {
-            get { return lastName; }
-            private set { lastName = value; }
-        }
-        public int BirthYear
-        {
-            get { return birthYear; }
-            private set { birthYear = value; }
-        }
-
+        public string FirstName { get; private set; }
+        public string LastName { get; private set; }
+        public int BirthYear { get; private set; }
         public Profile(string firstName, string lastName, int birthYear)
         {
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.birthYear = birthYear;
+            this.FirstName = firstName;
+            this.LastName = lastName;
+            this.BirthYear = birthYear;
         }
 
         public string GetInfo()
         {
-            int age = DateTime.Now.Year - birthYear;
-            return $"{firstName} {lastName}, возраст {age}";
+            int age = DateTime.Now.Year - BirthYear;
+            return $"{FirstName} {LastName}, возраст {age}";
         }
     }
 }
-
