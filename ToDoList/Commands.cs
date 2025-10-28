@@ -22,7 +22,6 @@ namespace TodoList
                 }
                 task = task.TrimEnd();
             }
-
             if (IsUrgent)
             {
                 task = "[Срочно] " + task;
@@ -31,8 +30,8 @@ namespace TodoList
             TodoList.Add(newItem);
             Console.WriteLine($"Задача добавлена: {task}");
         }
-
     }
+
     class ViewCommand : ICommand
     {
         public TodoList TodoList { get; set; }
@@ -49,7 +48,6 @@ namespace TodoList
     {
         public TodoList TodoList { get; set; }
         public int TaskIndex { get; set; }
-
         public void Execute()
         {
             try
@@ -68,7 +66,6 @@ namespace TodoList
     {
         public TodoList TodoList { get; set; }
         public int TaskIndex { get; set; }
-
         public void Execute()
         {
             try
@@ -81,6 +78,7 @@ namespace TodoList
             }
         }
     }
+
     class UpdateCommand : ICommand
     {
         public TodoList TodoList { get; set; }
@@ -116,6 +114,7 @@ namespace TodoList
             }
         }
     }
+
     class ProfileCommand : ICommand
     {
         public Profile Profile { get; set; }
