@@ -37,7 +37,6 @@ namespace TodoList
                 Console.WriteLine("Имя не может быть пустым");
                 return;
             }
-
             Console.Write("Введите вашу Фамилию: ");
             string lastName = Console.ReadLine();
 
