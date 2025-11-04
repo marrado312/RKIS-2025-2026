@@ -2,7 +2,7 @@
 
 namespace TodoList
 {
-    class TodoList
+    public class TodoList
     {
         private TodoItem[] items;
         private int count;
@@ -129,6 +129,16 @@ namespace TodoList
                 newItems[i] = items[i];
             }
             items = newItems;
+        }
+
+        public void AddTodoFromFile(TodoItem todo)
+        {
+            if (count >= items.Length)
+            {
+                IncreaseArray();
+            }
+            items[count] = todo;
+            count++;
         }
     }
 }
