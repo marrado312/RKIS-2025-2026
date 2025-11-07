@@ -19,9 +19,6 @@ namespace TodoList
 
             FileManager.EnsureDataDirectory(dataDir);
             LoadData();
-
-            CreateUser();
-
             Console.WriteLine("Введите help для вывода доступных команд");
 
 
