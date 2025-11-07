@@ -74,6 +74,7 @@ namespace TodoList
 
         static void LoadData()
         {
+            Console.WriteLine($"Создаем папку: {dataDir}");
             FileManager.EnsureDataDirectory(dataDir);
 
             if (!File.Exists(profileFilePath))

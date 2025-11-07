@@ -27,14 +27,28 @@ namespace TodoList
                 return null;
             }
 
-
             string content = File.ReadAllText(filePath);
+
+            // ПРОВЕРКА на пустой файл
+            if (string.IsNullOrEmpty(content))
+            {
+                return null;
+            }
+
             string[] parts = content.Split(';');
+
+            // ПРОВЕРКА что есть все 3 части
+            if (parts.Length < 3)
+            {
+                return null;
+            }
+
             string firstName = parts[0];
             string lastName = parts[1];
             int birthYear = int.Parse(parts[2]);
             return new Profile(firstName, lastName, birthYear);
         }
+        
     
     public static void SaveTodos(TodoList todos, string filePath)
         {
