@@ -48,9 +48,9 @@ namespace TodoList
             int birthYear = int.Parse(parts[2]);
             return new Profile(firstName, lastName, birthYear);
         }
-        
-    
-    public static void SaveTodos(TodoList todos, string filePath)
+
+
+        public static void SaveTodos(TodoList todos, string filePath)
         {
             string[] lines = new string[todos.Count];
 
@@ -93,14 +93,15 @@ namespace TodoList
 
         private static string EscapeCsv(string text)
         {
+            if (text == null) return "\"\"";  // ← ДОБАВЬ ПРОВЕРКУ
             return "\"" + text.Replace("\"", "\"\"").Replace("\n", "\\n") + "\"";
         }
 
         private static string UnescapeCsv(string text)
         {
+            if (text == null) return "";  // ← ДОБАВЬ ПРОВЕРКУ
             return text.Trim('"').Replace("\\n", "\n").Replace("\"\"", "\"");
         }
     }
 }
-
 
