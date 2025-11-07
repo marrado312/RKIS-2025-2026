@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TodoList
+namespace ToDoList.Commands
 {
     public class Profile
     {
@@ -9,9 +9,9 @@ namespace TodoList
         public int BirthYear { get; private set; }
         public Profile(string firstName, string lastName, int birthYear)
         {
-            this.FirstName = firstName;
-            this.LastName = lastName;
-            this.BirthYear = birthYear;
+            FirstName = firstName;
+            LastName = lastName;
+            BirthYear = birthYear;
         }
 
         public string GetInfo()

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using ToDoList.Commands;
 
 namespace TodoList
 {
@@ -7,9 +9,16 @@ namespace TodoList
         static Profile userProfile;
         static TodoList todoList = new TodoList();
 
+        static string dataDir = Path.Combine(Directory.GetCurrentDirectory(), "data");
+        static string profileFilePath = Path.Combine(dataDir, "profile.txt");
+        static string todoFilePath = Path.Combine(dataDir, "todo.csv");
+
         static void Main(string[] args)
         {
             Console.WriteLine("Работу выполнили Фучаджи и Клюев");
+
+            FileManager.EnsureDataDirectory(dataDir);
+            LoadData();
 
             CreateUser();
 
@@ -28,6 +37,8 @@ namespace TodoList
                 ICommand command = CommandParser.Parse(CommandUser, todoList, userProfile);
                 if (command != null)
                     command.Execute();
+
+                SaveData();
             }
         }
 
@@ -52,6 +63,35 @@ namespace TodoList
             }
             userProfile = new Profile(firstName, lastName, birthYear);
             Console.WriteLine($"Добавлен пользователь {userProfile.GetInfo()}");
+        }
+
+        static void SaveData()
+        {
+            if (userProfile != null)
+                FileManager.SaveProfile(userProfile, profileFilePath);
+            FileManager.SaveTodos(todoList, todoFilePath);
+        }
+
+        static void LoadData()
+        {
+            FileManager.EnsureDataDirectory(dataDir);
+
+            if (!File.Exists(profileFilePath))
+                File.WriteAllText(profileFilePath, "Default User");
+            if (!File.Exists(todoFilePath))
+                File.WriteAllText(todoFilePath, "");
+
+            userProfile = FileManager.LoadProfile(profileFilePath);
+            if (userProfile != null)
+            {
+                Console.WriteLine($"Загружен профиль: {userProfile.GetInfo()}");
+            }
+            var loadedTodos = FileManager.LoadTodos(todoFilePath);
+            if (loadedTodos.Count > 0)
+            {
+                todoList = loadedTodos;
+                Console.WriteLine($"Загружено задач: {todoList.Count}");
+            }
         }
     }
 }
