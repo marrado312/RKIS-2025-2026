@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using ToDoList.Commands;
+using ToDoList;
 
 namespace TodoList
 {
@@ -29,7 +29,6 @@ namespace TodoList
 
             string content = File.ReadAllText(filePath);
 
-            // ПРОВЕРКА на пустой файл
             if (string.IsNullOrEmpty(content))
             {
                 return null;
@@ -37,7 +36,6 @@ namespace TodoList
 
             string[] parts = content.Split(';');
 
-            // ПРОВЕРКА что есть все 3 части
             if (parts.Length < 3)
             {
                 return null;
@@ -93,13 +91,13 @@ namespace TodoList
 
         private static string EscapeCsv(string text)
         {
-            if (text == null) return "\"\"";  // ← ДОБАВЬ ПРОВЕРКУ
+            if (text == null) return "\"\"";
             return "\"" + text.Replace("\"", "\"\"").Replace("\n", "\\n") + "\"";
         }
 
         private static string UnescapeCsv(string text)
         {
-            if (text == null) return "";  // ← ДОБАВЬ ПРОВЕРКУ
+            if (text == null) return "";
             return text.Trim('"').Replace("\\n", "\n").Replace("\"\"", "\"");
         }
     }

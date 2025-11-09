@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ToDoList.Commands
+namespace ToDoList
 {
     public class Profile
     {

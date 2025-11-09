@@ -19,7 +19,7 @@ namespace TodoList
                 string line;
                 while (!string.IsNullOrWhiteSpace(line = Console.ReadLine()))
                 {
-                    task += line + Environment.NewLine;
+                    task += line + "/n";
                 }
                 task = task.TrimEnd();
             }

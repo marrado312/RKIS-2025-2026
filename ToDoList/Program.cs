@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using ToDoList.Commands;
+using ToDoList;
 
 namespace TodoList
 {
@@ -80,11 +80,15 @@ namespace TodoList
                 File.WriteAllText(todoFilePath, "");
 
             userProfile = FileManager.LoadProfile(profileFilePath);
-            if (userProfile != null)
+            if (userProfile == null)
+            {
+                CreateUser();
+            }
+            else
             {
                 Console.WriteLine($"Загружен профиль: {userProfile.GetInfo()}");
             }
-            var loadedTodos = FileManager.LoadTodos(todoFilePath);
+                var loadedTodos = FileManager.LoadTodos(todoFilePath);
             if (loadedTodos.Count > 0)
             {
                 todoList = loadedTodos;
