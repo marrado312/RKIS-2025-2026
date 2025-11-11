@@ -24,6 +24,12 @@ namespace TodoList
                 task = task.TrimEnd();
             }
 
+			if (string.IsNullOrEmpty(task))
+			{
+				Console.WriteLine("Ошибка: текст задачи не может быть пустым");
+				return;
+			}
+
             if (IsUrgent)
             {
                 task = "[Срочно] " + task;

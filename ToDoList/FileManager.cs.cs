@@ -79,6 +79,11 @@ namespace TodoList
                 string[] parts = line.Split(';');
 
                 string text = UnescapeCsv(parts[1]);
+
+				if (string.IsNullOrEmpty(text))
+				{
+					continue;
+				}
                 bool isDone = bool.Parse(parts[2]);
                 DateTime lastUpdate = DateTime.Parse(parts[3]);
 
