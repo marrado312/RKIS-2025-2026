@@ -56,8 +56,8 @@ namespace TodoList
             {
                 var todo = todos.GetItem(i);
                 string text = EscapeCsv(todo.Text);
-                string line = $"{i};{text};{todo.IsDone};{todo.LastUpdate:yyyy-MM-ddTHH:mm:ss}";
-                lines[i] = line;
+				string line = $"{i};{text};{todo.Status};{todo.LastUpdate:yyyy-MM-ddTHH:mm:ss}";
+				lines[i] = line;
             }
             File.WriteAllLines(filePath, lines);
         }
@@ -84,13 +84,13 @@ namespace TodoList
 				{
 					continue;
 				}
-                bool isDone = bool.Parse(parts[2]);
-                DateTime lastUpdate = DateTime.Parse(parts[3]);
+				TodoStatus status = (TodoStatus)Enum.Parse(typeof(TodoStatus), parts[2]);
+				DateTime lastUpdate = DateTime.Parse(parts[3]);
 
-                var todo = new TodoItem(text);
-                if (isDone) todo.MarkDone();
-                todoList.AddTodoFromFile(todo);
-            }
+
+				var todo = new TodoItem(text);
+				todo.SetStatus(status);
+			}
             return todoList;
         }
 
@@ -107,4 +107,3 @@ namespace TodoList
         }
     }
 }
-

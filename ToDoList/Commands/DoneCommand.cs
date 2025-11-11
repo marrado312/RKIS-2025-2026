@@ -9,12 +9,12 @@ namespace TodoList
 
         public void Execute()
         {
-            try
-            {
-                TodoList.GetItem(TaskIndex).MarkDone();
-                Console.WriteLine($"Задача {TaskIndex + 1} отмечена как выполненная");
-            }
-            catch (Exception ex)
+			try
+			{
+				TodoList.GetItem(TaskIndex).SetStatus(TodoStatus.Completed);
+				Console.WriteLine($"Задача {TaskIndex + 1} отмечена как выполненная (статус: Выполнено)");
+			}
+			catch (Exception ex)
             {
                 Console.WriteLine($"Ошибка: {ex.Message}");
             }
