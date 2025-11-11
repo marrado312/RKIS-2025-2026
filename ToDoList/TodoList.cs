@@ -77,7 +77,7 @@ namespace TodoList
 					row += $" {i + 1}".PadRight(indexWidth) + " |";
 
 				if (showDone)
-					row += $" {(items[i].IsDone ? "Сделано" : "Не сделано")}".PadRight(statusWidth) + " |";
+					row += $" {GetStatusText(items[i].Status)}".PadRight(statusWidth) + " |";
 
 				if (showDate)
 					row += $" {items[i].LastUpdate:dd.MM.yyyy HH:mm}".PadRight(dateWidth) + " |";
