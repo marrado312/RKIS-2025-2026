@@ -2,17 +2,25 @@
 
 namespace TodoList
 {
-    public class TodoItem
+	public enum TodoStatus
+	{
+		NotStarted, // не начато
+		InProgress, // в процессе
+		Completed, // выполнено
+		Postponed, // отложено
+		Failed // провалено
+	}
+	public class TodoItem
     {
         public string Text { get; private set; }
-        public bool IsDone { get; private set; }
-        public DateTime LastUpdate { get; private set; }
+		public TodoStatus Status { get; private set; }
+		public DateTime LastUpdate { get; private set; }
 
         public TodoItem(string text)
         {
             this.Text = text;
-            this.IsDone = false;
-            this.LastUpdate = DateTime.Now;
+			this.Status = TodoStatus.NotStarted;
+			this.LastUpdate = DateTime.Now;
         }
         public void MarkDone()
         {
