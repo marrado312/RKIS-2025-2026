@@ -142,5 +142,29 @@ namespace TodoList
 		{
 			return GetEnumerator();
 		}
+
+	public void SetStatus(int index, TodoStatus status)
+		{
+			if (index < 0 || index >= count)
+			{
+				Console.WriteLine("Ошибка: неверный индекс задачи");
+				return;
+			}
+
+			items[index].SetStatus(status);
+			Console.WriteLine($"Статус задачи {index + 1} изменен на: {GetStatusText(status)}");
+		}
+
+		private string GetStatusText(TodoStatus status)
+		{
+			return status switch
+			{
+				TodoStatus.NotStarted => "Не начато",
+				TodoStatus.InProgress => "В процессе",
+				TodoStatus.Completed => "Выполнено",
+				TodoStatus.Postponed => "Отложено",
+				TodoStatus.Failed => "Провалено",
+			};
+		}
 	}
 }
