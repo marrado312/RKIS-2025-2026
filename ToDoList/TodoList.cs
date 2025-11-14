@@ -143,7 +143,7 @@ namespace TodoList
 			return GetEnumerator();
 		}
 
-	public void SetStatus(int index, TodoStatus status)
+		public void SetStatus(int index, TodoStatus status)
 		{
 			if (index < 0 || index >= count)
 			{
