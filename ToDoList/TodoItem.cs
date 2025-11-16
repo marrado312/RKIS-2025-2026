@@ -48,7 +48,7 @@ namespace TodoList
 			string dateText = LastUpdate.ToString("dd.MM.yyyy HH:mm");
 			return $"Текст: {Text}\nСтатус: {statusText}\nДата изменения: {dateText}";
 		}
-		private string GetStatusText()
+		public string GetStatusText()
 		{
 			return Status switch
 			{

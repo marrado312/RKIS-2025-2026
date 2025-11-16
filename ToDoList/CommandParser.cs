@@ -141,8 +141,8 @@ namespace TodoList
 				string statusStr = parts[2].ToLower();
 				command.NewStatus = statusStr switch
 				{
-					"notstarted" => TodoStatus.NotStarted,
-					"inprogress" => TodoStatus.InProgress,
+					"not_started" => TodoStatus.NotStarted,
+					"in_progress" => TodoStatus.InProgress,
 					"completed" => TodoStatus.Completed,
 					"postponed" => TodoStatus.Postponed,
 					"failed" => TodoStatus.Failed,

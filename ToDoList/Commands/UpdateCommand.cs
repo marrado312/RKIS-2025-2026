@@ -12,8 +12,8 @@ namespace TodoList
         {
             try
             {
-                TodoList.GetItem(TaskIndex).UpdateText(NewText);
-                Console.WriteLine($"Задача {TaskIndex + 1} обновлена: {NewText}");
+				TodoList[TaskIndex].UpdateText(NewText);
+				Console.WriteLine($"Задача {TaskIndex + 1} обновлена: {NewText}");
             }
             catch (Exception ex)
             {

@@ -16,21 +16,9 @@ namespace TodoList.Commands
 				return;
 			}
 
-			var task = TodoList.GetItem(TaskIndex);
+			var task = TodoList[TaskIndex];
 			task.SetStatus(NewStatus);
-			Console.WriteLine($"Статус задачи {TaskIndex + 1} изменен на: {GetStatusText(NewStatus)}");
-		}
-
-		private string GetStatusText(TodoStatus status)
-		{
-			return status switch
-			{
-				TodoStatus.NotStarted => "Не начато",
-				TodoStatus.InProgress => "В процессе",
-				TodoStatus.Completed => "Выполнено",
-				TodoStatus.Postponed => "Отложено",
-				TodoStatus.Failed => "Провалено",
-			};
+			Console.WriteLine($"Статус задачи {TaskIndex + 1} изменен на: {task.GetStatusText()}");
 		}
 	}
 }

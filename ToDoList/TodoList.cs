@@ -77,7 +77,7 @@ namespace TodoList
 					row += $" {i + 1}".PadRight(indexWidth) + " |";
 
 				if (showDone)
-					row += $" {GetStatusText(items[i].Status)}".PadRight(statusWidth) + " |";
+					row += $" {items[i].GetStatusText()}".PadRight(statusWidth) + " |";
 
 				if (showDate)
 					row += $" {items[i].LastUpdate:dd.MM.yyyy HH:mm}".PadRight(dateWidth) + " |";
@@ -121,15 +121,6 @@ namespace TodoList
 			items.Add(todo);
 			count++;
 		}
-		public TodoItem this[int index]
-		{
-			get
-			{
-				if (index < 0 || index >= count)
-					throw new ArgumentOutOfRangeException();
-				return items[index];
-			}
-		}
 
 		public IEnumerator<TodoItem> GetEnumerator()
 		{
@@ -138,10 +129,11 @@ namespace TodoList
 				yield return items[i];
 			}
 		}
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}
+		public TodoItem this[int index] => items[index];
 
 		public void SetStatus(int index, TodoStatus status)
 		{
@@ -152,19 +144,7 @@ namespace TodoList
 			}
 
 			items[index].SetStatus(status);
-			Console.WriteLine($"Статус задачи {index + 1} изменен на: {GetStatusText(status)}");
-		}
-
-		private string GetStatusText(TodoStatus status)
-		{
-			return status switch
-			{
-				TodoStatus.NotStarted => "Не начато",
-				TodoStatus.InProgress => "В процессе",
-				TodoStatus.Completed => "Выполнено",
-				TodoStatus.Postponed => "Отложено",
-				TodoStatus.Failed => "Провалено",
-			};
+			Console.WriteLine($"Статус задачи {index + 1} изменен на: {items[index].GetStatusText()}");
 		}
 	}
 }

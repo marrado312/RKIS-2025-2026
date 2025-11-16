@@ -54,8 +54,8 @@ namespace TodoList
 
             for (int i = 0; i < todos.Count; i++)
             {
-                var todo = todos.GetItem(i);
-                string text = EscapeCsv(todo.Text);
+				var todo = todos[i];
+				string text = EscapeCsv(todo.Text);
 				string line = $"{i};{text};{todo.Status};{todo.LastUpdate:yyyy-MM-ddTHH:mm:ss}";
 				lines[i] = line;
             }
@@ -90,6 +90,7 @@ namespace TodoList
 
 				var todo = new TodoItem(text);
 				todo.SetStatus(status);
+				todoList.AddTodoFromFile(todo); //
 			}
             return todoList;
         }
