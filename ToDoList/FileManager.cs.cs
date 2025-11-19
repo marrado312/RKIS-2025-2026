@@ -90,7 +90,7 @@ namespace TodoList
 
 				var todo = new TodoItem(text);
 				todo.SetStatus(status);
-				todoList.AddTodoFromFile(todo); //
+				todoList.AddTodoFromFile(todo);
 			}
             return todoList;
         }

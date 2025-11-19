@@ -2,8 +2,9 @@
 
 namespace TodoList
 {
-    interface ICommand
-    {
-        void Execute();
-    }
+	public interface ICommand
+	{
+		void Execute();
+		void Unexecute();
+	}
 }
