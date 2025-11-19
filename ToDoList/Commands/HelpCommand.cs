@@ -2,11 +2,11 @@
 
 namespace TodoList
 {
-    class HelpCommand : ICommand
-    {
-        public void Execute()
-        {
-            Console.WriteLine(@"Доступные команды:
+	class HelpCommand : ICommand
+	{
+		public void Execute()
+		{
+			Console.WriteLine(@"Доступные команды:
         help - справка по командам
         profile - данные пользователя
         add - добавить задачу (--multiline/-m, --urgent/-u)
@@ -16,6 +16,11 @@ namespace TodoList
         delete - удалить задачу
         update - изменить текст задачи
         exit - выход из программы");
-        }
-    }
+		}
+    
+	public void Unexecute()
+		{
+			// пустой метод
+		}
+	}
 }
