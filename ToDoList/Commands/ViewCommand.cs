@@ -2,16 +2,21 @@
 
 namespace TodoList
 {
-    class ViewCommand : ICommand
-    {
-        public TodoList TodoList { get; set; }
-        public bool ShowIndex { get; set; }
-        public bool ShowStatus { get; set; }
-        public bool ShowDate { get; set; }
+	class ViewCommand : ICommand
+	{
+		public TodoList TodoList { get; set; }
+		public bool ShowIndex { get; set; }
+		public bool ShowStatus { get; set; }
+		public bool ShowDate { get; set; }
 
-        public void Execute()
-        {
-            TodoList.View(ShowIndex, ShowStatus, ShowDate);
-        }
-    }
+		public void Execute()
+		{
+			TodoList.View(ShowIndex, ShowStatus, ShowDate);
+		}
+
+		public void Unexecute()
+		{
+			// пустой метод
+		}
+	}
 }
