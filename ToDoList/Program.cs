@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using TodoList.Commands;
 using ToDoList;
 
 namespace TodoList
@@ -7,7 +8,6 @@ namespace TodoList
     class Program
     {
         static Profile userProfile;
-        static TodoList todoList = new TodoList();
 
         static string dataDir = Path.Combine(Directory.GetCurrentDirectory(), "data");
         static string profileFilePath = Path.Combine(dataDir, "profile.txt");
@@ -31,12 +31,17 @@ namespace TodoList
                 if (CommandUser == null || CommandUser.ToLower() == "exit")
                     break;
 
-                ICommand command = CommandParser.Parse(CommandUser, todoList, userProfile);
-                if (command != null)
-                    command.Execute();
+				ICommand command = CommandParser.Parse(CommandUser, AppInfo.Todos, userProfile);
+				if (command != null)
+				{
+					command.Execute();
 
-				AppInfo.undoStack.Push(command);
-
+					if (command is AddCommand || command is DeleteCommand ||
+						command is UpdateCommand || command is StatusCommand)
+					{
+						AppInfo.undoStack.Push(command);
+					}
+				}
 				SaveData();
             }
         }
@@ -68,12 +73,15 @@ namespace TodoList
         {
             if (userProfile != null)
                 FileManager.SaveProfile(userProfile, profileFilePath);
-            FileManager.SaveTodos(todoList, todoFilePath);
-        }
+			FileManager.SaveTodos(AppInfo.Todos, todoFilePath);
+		}
 
         static void LoadData()
         {
-            Console.WriteLine($"Создаем папку: {dataDir}");
+			if (AppInfo.Todos == null)
+				AppInfo.Todos = new TodoList();
+
+			Console.WriteLine($"Создаем папку: {dataDir}");
             FileManager.EnsureDataDirectory(dataDir);
 
             if (!File.Exists(profileFilePath))
@@ -93,9 +101,9 @@ namespace TodoList
                 var loadedTodos = FileManager.LoadTodos(todoFilePath);
             if (loadedTodos.Count > 0)
             {
-                todoList = loadedTodos;
-                Console.WriteLine($"Загружено задач: {todoList.Count}");
-            }
+				AppInfo.Todos = loadedTodos;
+				Console.WriteLine($"Загружено задач: {AppInfo.Todos.Count}");
+			}
         }
     }
 }

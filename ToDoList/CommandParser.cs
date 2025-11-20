@@ -26,25 +26,25 @@ namespace TodoList
 			return new ProfileCommand { Profile = profile };
 
 			if (command == "view")
-				return new ViewCommand { TodoList = todoList };
+				return new ViewCommand { TodoList = AppInfo.Todos };
 
 			if (command.StartsWith("view "))
 			{
-				var viewCommand = new ViewCommand { TodoList = todoList };
+				var viewCommand = new ViewCommand { TodoList = AppInfo.Todos };
 				ParseViewFlags(inputString, viewCommand);
 				return viewCommand;
 			}
 
 			if (command.StartsWith("add"))
 			{
-				var addCommand = new AddCommand { TodoList = todoList };
+				var addCommand = new AddCommand { TodoList = AppInfo.Todos };
 				ParseAddCommand(inputString, addCommand);
 				return addCommand;
 			}
 
 			if (command.StartsWith("delete "))
 			{
-				var deleteCommand = new DeleteCommand { TodoList = todoList };
+				var deleteCommand = new DeleteCommand { TodoList = AppInfo.Todos };
 				if (ParseTaskIndex(inputString, out int index))
 					deleteCommand.TaskIndex = index;
 				return deleteCommand;
@@ -52,14 +52,14 @@ namespace TodoList
 
 			if (command.StartsWith("update "))
 			{
-				var updateCommand = new UpdateCommand { TodoList = todoList };
+				var updateCommand = new UpdateCommand { TodoList = AppInfo.Todos };
 				if (ParseUpdateCommand(inputString, updateCommand))
 					return updateCommand;
 			}
 
 			if (command.StartsWith("read "))
 			{
-				var readCommand = new ReadCommand { TodoList = todoList };
+				var readCommand = new ReadCommand { TodoList = AppInfo.Todos };
 				if (ParseTaskIndex(inputString, out int index))
 					readCommand.TaskIndex = index;
 				return readCommand;
@@ -67,7 +67,7 @@ namespace TodoList
 
 			if (command.StartsWith("status "))
 			{
-				var statusCommand = new StatusCommand { TodoList = todoList };
+				var statusCommand = new StatusCommand { TodoList = AppInfo.Todos };
 				if (ParseStatusCommand(inputString, statusCommand))
 					return statusCommand;
 			}

@@ -37,8 +37,8 @@ namespace TodoList
 			{
 				task = "[Срочно] " + task;
 			}
-			TodoItem newItem = new TodoItem(task);
-			TodoList.Add(newItem);
+			addedItem = new TodoItem(task);
+			TodoList.Add(addedItem);
 			addedIndex = TodoList.Count - 1;
 			Console.WriteLine($"Задача добавлена: {task}");
 		}

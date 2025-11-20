@@ -14,8 +14,8 @@ namespace TodoList
         read - полный текст задачи
 	status - изменить статус задачи (not_started, in_progress, completed, postponed, failed)
         delete - удалить задачу
-		undo - отменить последнее действие
-		redo - повторить отмененное действие
+	undo - отменить последнее действие
+	redo - повторить отмененное действие
         update - изменить текст задачи
         exit - выход из программы");
 		}
