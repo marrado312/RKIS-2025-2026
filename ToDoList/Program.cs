@@ -35,7 +35,9 @@ namespace TodoList
                 if (command != null)
                     command.Execute();
 
-                SaveData();
+				AppInfo.undoStack.Push(command);
+
+				SaveData();
             }
         }
 
