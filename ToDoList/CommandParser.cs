@@ -65,6 +65,11 @@ namespace TodoList
 				return readCommand;
 			}
 
+			if (command == "status")
+			{
+				return new StatusCommand { TodoList = AppInfo.Todos };
+			}
+
 			if (command.StartsWith("status "))
 			{
 				var statusCommand = new StatusCommand { TodoList = AppInfo.Todos };
