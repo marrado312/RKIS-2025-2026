@@ -16,8 +16,14 @@ namespace TodoList
 			if (command == "help")
 				return new HelpCommand();
 
+			if (command == "undo")
+				return new UndoCommand();
+
+			if (command == "redo")
+				return new RedoCommand();
+
 			if (command == "profile")
-				return new ProfileCommand { Profile = profile };
+			return new ProfileCommand { Profile = profile };
 
 			if (command == "view")
 				return new ViewCommand { TodoList = todoList };
