@@ -13,6 +13,7 @@ namespace TodoList
         view - список задач (--index/-i, --status/-s, --update-date/-d, --all/-a)
         read - полный текст задачи
 	status - изменить статус задачи (not_started, in_progress, completed, postponed, failed)
+		search - поиск задач
         delete - удалить задачу
 	undo - отменить последнее действие
 	redo - повторить отмененное действие

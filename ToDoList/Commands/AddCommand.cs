@@ -42,8 +42,7 @@ namespace TodoList
 			addedIndex = TodoList.Count - 1;
 			Console.WriteLine($"Задача добавлена: {task}");
 		}
-    
-	
+
 		public void Unexecute()
 		{
 			if (addedItem != null && TodoList.Count > 0)
