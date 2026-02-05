@@ -31,7 +31,7 @@ namespace TodoList
                 if (CommandUser == null || CommandUser.ToLower() == "exit")
                     break;
 
-				ICommand command = CommandParser.Parse(CommandUser, AppInfo.Todos, userProfile);
+				ICommand command = CommandParser.Parse(CommandUser);
 				if (command != null)
 				{
 					command.Execute();
