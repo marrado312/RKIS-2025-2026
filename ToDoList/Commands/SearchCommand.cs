@@ -76,7 +76,7 @@ namespace TodoList
 					return;
 				}
 			}
-		
+
 
 			if (!string.IsNullOrEmpty(SortBy))
 			{
@@ -112,32 +112,32 @@ namespace TodoList
 				query = query.Take(TopCount.Value);
 			}
 
-			var results = query.ToList();
-
-			if (results.Count == 0)
+			if (!query.Any())
 			{
 				Console.WriteLine("Ничего не найдено");
 				return;
 			}
 
-			Console.WriteLine($"Найдено задач: {results.Count}");
-
+			int count = 0;
 			Console.WriteLine("| Index | Text                             | Status       | LastUpdate     |");
 			Console.WriteLine("|-------|----------------------------------|--------------|----------------|");
 
-			for (int i = 0; i < results.Count; i++)
+			foreach (var item in query)
 			{
-				string shortText = results[i].Text;
+				count++;
+				string shortText = item.Text;
 				if (shortText.Length > 30)
 					shortText = shortText.Substring(0, 27) + "...";
 
 				shortText = shortText.Replace("\n", " ").Replace("\r", "");
 
-				string status = results[i].GetStatusText();
-				string date = results[i].LastUpdate.ToString("dd.MM.yyyy HH:mm");
+				string status = item.GetStatusText();
+				string date = item.LastUpdate.ToString("dd.MM.yyyy HH:mm");
 
-				Console.WriteLine($"| {i + 1,5} | {shortText,-32} | {status,-12} | {date,-14} |");
+				Console.WriteLine($"| {count,5} | {shortText,-32} | {status,-12} | {date,-14} |");
 			}
+
+			Console.WriteLine($"Найдено задач: {count}");
 		}
 
 		public void Unexecute()
