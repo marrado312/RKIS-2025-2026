@@ -190,7 +190,7 @@ namespace TodoList
 				}
 				else if (arg == "--status" && i + 1 < parts.Length)
 				{
-					command.Status = parts[++i];
+					command.Status = parts[++i].ToLower();
 				}
 				else if (arg == "--from" && i + 1 < parts.Length)
 				{

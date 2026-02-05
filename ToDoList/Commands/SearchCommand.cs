@@ -54,9 +54,20 @@ namespace TodoList
 
 			if (!string.IsNullOrEmpty(Status))
 			{
-				if (Enum.TryParse<TodoStatus>(Status, true, out var statusValue))
+				string statusStr = Status.ToLower().Replace("-", "_");
+				TodoStatus? statusValue = statusStr switch
 				{
-					query = query.Where(t => t.Status == statusValue);
+					"not_started" => TodoStatus.NotStarted,
+					"in_progress" => TodoStatus.InProgress,
+					"completed" => TodoStatus.Completed,
+					"postponed" => TodoStatus.Postponed,
+					"failed" => TodoStatus.Failed,
+					_ => null
+				};
+
+				if (statusValue.HasValue)
+				{
+					query = query.Where(t => t.Status == statusValue.Value);
 				}
 				else
 				{
@@ -65,6 +76,7 @@ namespace TodoList
 					return;
 				}
 			}
+		
 
 			if (!string.IsNullOrEmpty(SortBy))
 			{
