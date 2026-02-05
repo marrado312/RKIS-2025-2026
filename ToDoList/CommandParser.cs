@@ -76,6 +76,12 @@ namespace TodoList
 				if (ParseStatusCommand(inputString, statusCommand))
 					return statusCommand;
 			}
+			if (command.StartsWith("search"))
+			{
+				var searchCommand = new SearchCommand { TodoList = AppInfo.Todos };
+				ParseSearchCommand(inputString, searchCommand);
+				return searchCommand;
+			}
 			Console.WriteLine("Неизвестная команда. Введите help для справки.");
 			return null;
 		}
@@ -161,6 +167,57 @@ namespace TodoList
 				return true;
 			}
 			return false;
+		}
+		private static bool ParseSearchCommand(string input, SearchCommand command)
+		{
+			var parts = input.Split(' ');
+
+			for (int i = 1; i < parts.Length; i++)
+			{
+				string arg = parts[i];
+
+				if (arg == "--contains" && i + 1 < parts.Length)
+				{
+					command.ContainsText = parts[++i].Trim('"');
+				}
+				else if (arg == "--starts-with" && i + 1 < parts.Length)
+				{
+					command.StartsWithText = parts[++i].Trim('"');
+				}
+				else if (arg == "--ends-with" && i + 1 < parts.Length)
+				{
+					command.EndsWithText = parts[++i].Trim('"');
+				}
+				else if (arg == "--status" && i + 1 < parts.Length)
+				{
+					command.Status = parts[++i];
+				}
+				else if (arg == "--from" && i + 1 < parts.Length)
+				{
+					if (DateTime.TryParseExact(parts[++i], "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out var date))
+						command.FromDate = date;
+				}
+				else if (arg == "--to" && i + 1 < parts.Length)
+				{
+					if (DateTime.TryParseExact(parts[++i], "yyyy-MM-dd", null, System.Globalization.DateTimeStyles.None, out var date))
+						command.ToDate = date;
+				}
+				else if (arg == "--sort" && i + 1 < parts.Length)
+				{
+					command.SortBy = parts[++i];
+				}
+				else if (arg == "--desc")
+				{
+					command.Descending = true;
+				}
+				else if (arg == "--top" && i + 1 < parts.Length)
+				{
+					if (int.TryParse(parts[++i], out int top))
+						command.TopCount = top;
+				}
+			}
+
+			return true;
 		}
 	}
 }
