@@ -10,7 +10,7 @@
 
 ## Курсовая
 
-[**Таблица с выбранными студентами и темами и баллами**](https://docs.google.com/spreadsheets/d/1rapSXuIYpUFQ2uAyY-3Ex3Tb1xQIvf_Qncp-eknlJQM/edit?usp=sharing)
+[**Таблица с выбранными темами и баллами**](https://docs.google.com/spreadsheets/d/1rapSXuIYpUFQ2uAyY-3Ex3Tb1xQIvf_Qncp-eknlJQM/edit?usp=sharing)
 
 Описание, требования и этапы выполнения курсовой работы находятся в соответствующей папке.
 
