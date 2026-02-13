@@ -13,10 +13,5 @@ namespace TodoList
 		{
 			TodoList.View(ShowIndex, ShowStatus, ShowDate);
 		}
-
-		public void Unexecute()
-		{
-			// пустой метод
-		}
 	}
 }

@@ -18,9 +18,5 @@ namespace TodoList
 				Console.WriteLine("Профиль не создан");
 			}
 		}
-		public void Unexecute()
-		{
-			// пустой метод
-		}
 	}
 }

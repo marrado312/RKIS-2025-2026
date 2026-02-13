@@ -1,53 +1,68 @@
 ﻿using System;
+using ToDoList;
 
-namespace TodoList
+namespace TodoList.Commands
 {
-	class AddCommand : ICommand
+	public class AddCommand : ICommand, IUndo
 	{
-		public TodoList TodoList { get; set; }
+		public string TaskText { get; set; }
 		public bool IsMultiline { get; set; }
 		public bool IsUrgent { get; set; }
-		public string TaskText { get; set; }
 
-		public TodoItem addedItem;
-		public int addedIndex;
+		private TodoItem addedItem;
+		private int addedIndex;
 
 		public void Execute()
 		{
-			string task = TaskText;
+			if (string.IsNullOrEmpty(TaskText) && !IsMultiline)
+			{
+				Console.Write("Введите текст задачи: ");
+				TaskText = Console.ReadLine();
+			}
+
+			string task = TaskText ?? "";
+
+			if (IsUrgent)
+			{
+				task = task.Replace("-u", "").Trim();
+				task = task.Trim('"');
+
+				if (!task.StartsWith("[Срочно]"))
+				{
+					task = "[Срочно] " + task;
+				}
+			}
+
 			if (IsMultiline)
 			{
 				Console.WriteLine("Введите задачу (для завершения введите пустую строку):");
-				task = "";
+				string multiTask = "";
 				string line;
 				while (!string.IsNullOrWhiteSpace(line = Console.ReadLine()))
 				{
-					task += line + "/n";
+					multiTask += line + "\n";
 				}
-				task = task.TrimEnd();
+				task = multiTask.TrimEnd();
 			}
 
-			if (string.IsNullOrEmpty(task))
+			if (string.IsNullOrWhiteSpace(task))
 			{
 				Console.WriteLine("Ошибка: текст задачи не может быть пустым");
 				return;
 			}
 
-			if (IsUrgent)
-			{
-				task = "[Срочно] " + task;
-			}
 			addedItem = new TodoItem(task);
-			TodoList.Add(addedItem);
-			addedIndex = TodoList.Count - 1;
-			Console.WriteLine($"Задача добавлена: {task}");
+			AppInfo.Todos.Add(addedItem);
+			addedIndex = AppInfo.Todos.Count - 1;
+
+			Console.WriteLine($"Задача добавлена: {addedItem.Text}");
 		}
 
 		public void Unexecute()
 		{
-			if (addedItem != null && TodoList.Count > 0)
+			if (addedItem != null)
 			{
-				TodoList.Delete(addedIndex);
+				AppInfo.Todos.Delete(addedIndex);
 				Console.WriteLine($"Отменено добавление задачи: {addedItem.Text}");
 			}
 		}

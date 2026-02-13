@@ -1,27 +1,24 @@
 ﻿using System;
 
-namespace TodoList
+namespace TodoList.Commands
 {
-	class UndoCommand : ICommand
+	public class UndoCommand : ICommand
 	{
 		public void Execute()
 		{
-			if (AppInfo.undoStack.Count > 0)
+			if (AppInfo.undoStack != null && AppInfo.undoStack.Count > 0)
 			{
-				ICommand command = AppInfo.undoStack.Pop();
-				command.Unexecute();
-				AppInfo.redoStack.Push(command);
-				Console.WriteLine("Отменено последнее действие");
+				ICommand lastCommand = AppInfo.undoStack.Pop();
+
+				if (lastCommand is IUndo undoableCommand)
+				{
+					undoableCommand.Unexecute();
+				}
 			}
 			else
 			{
-				Console.WriteLine("Нет действий для отмены");
+				Console.WriteLine("История команд пуста.");
 			}
-		}
-
-		public void Unexecute()
-		{
-			// пустой метод
 		}
 	}
 }

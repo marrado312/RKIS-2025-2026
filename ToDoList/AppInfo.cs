@@ -11,6 +11,7 @@ namespace TodoList
 
 		public static Stack<ICommand> undoStack = new Stack<ICommand>();
 		public static Stack<ICommand> redoStack = new Stack<ICommand>();
+		public static Stack<ICommand> History { get; set; } = new Stack<ICommand>();
 
 		static AppInfo()
 		{

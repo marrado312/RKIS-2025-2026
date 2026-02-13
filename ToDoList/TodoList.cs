@@ -11,8 +11,14 @@ namespace TodoList
 
 		public TodoList()
 		{
-			items = new List<TodoItem>();
-			count = 0;
+			this.items = new List<TodoItem>();
+			this.count = 0;
+		}
+
+		public TodoList(List<TodoItem> items)
+		{
+			this.items = items;
+			this.count = items.Count;
 		}
 
 		public void Add(TodoItem item)
@@ -119,6 +125,17 @@ namespace TodoList
 		public void AddTodoFromFile(TodoItem todo)
 		{
 			items.Add(todo);
+			count++;
+		}
+
+		public void Insert(int index, TodoItem item)
+		{
+			if (index < 0 || index > count)
+			{
+				Console.WriteLine("Ошибка: неверный индекс для вставки");
+				return;
+			}
+			items.Insert(index, item);
 			count++;
 		}
 

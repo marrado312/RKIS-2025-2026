@@ -18,10 +18,5 @@ namespace TodoList
 				Console.WriteLine($"Ошибка: {ex.Message}");
 			}
 		}
-
-		public void Unexecute()
-		{
-			// пустой метод
-		}
 	}
 }

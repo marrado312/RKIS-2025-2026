@@ -2,7 +2,7 @@
 
 namespace TodoList
 {
-	class DeleteCommand : ICommand
+	class DeleteCommand : ICommand, IUndo
 	{
 		public TodoList TodoList { get; set; }
 		public int TaskIndex { get; set; }

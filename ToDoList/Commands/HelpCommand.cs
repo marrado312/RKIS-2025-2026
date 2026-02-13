@@ -20,10 +20,5 @@ namespace TodoList
         update - изменить текст задачи
         exit - выход из программы");
 		}
-    
-	public void Unexecute()
-		{
-			// пустой метод
-		}
 	}
 }

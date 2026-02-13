@@ -18,10 +18,5 @@ namespace TodoList
 				Console.WriteLine("Нет действий для повтора");
 			}
 		}
-
-		public void Unexecute()
-		{
-			// пустой метод
-		}
 	}
 }
