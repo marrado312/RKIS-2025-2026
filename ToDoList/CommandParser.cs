@@ -39,23 +39,17 @@ namespace TodoList
 			string commandName = parts[0].ToLower();
 			string arguments = parts.Length > 1 ? parts[1] : "";
 
-			if (commandHandlers.TryGetValue(commandName, out var handler))
+			if (!commandHandlers.TryGetValue(commandName, out var handler))
 			{
-				try
-				{
-					return handler(arguments);
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine($"Ошибка выполнения команды: {ex.Message}");
-					return null;
-				}
+				throw new InvalidCommandException($"Команда '{commandName}' не найдена.");
 			}
-			else
+
+			if (commandName != "profile" && AppInfo.CurrentProfile == null)
 			{
-				Console.WriteLine($"Неизвестная команда: {commandName}");
-				return null;
+				throw new AuthenticationException("Сначала создайте профиль командой profile.");
 			}
+
+			throw new InvalidCommandException($"Команда '{commandName}' не найдена.");
 		}
 
 		private static ICommand ParseViewCommand(string args)
@@ -106,27 +100,39 @@ namespace TodoList
 
 		private static ICommand ParseDeleteCommand(string args)
 		{
-			var command = new DeleteCommand { TodoList = AppInfo.Todos };
+			if (!ParseTaskIndex(args, out int index))
+			{
+				throw new InvalidCommandException("Для удаления введите номер задачи числом.");
+			}
 
-			if (ParseTaskIndex(args, out int index))
-				command.TaskIndex = index;
+			if (index < 0 || index >= AppInfo.Todos.Count)
+			{
+				throw new TaskNotFoundException($"Ошибка: Задача №{index + 1} не найдена.");
+			}
 
-			return command;
+			return new DeleteCommand { TodoList = AppInfo.Todos, TaskIndex = index };
 		}
 
 		private static ICommand ParseUpdateCommand(string args)
 		{
 			string[] parts = args.Split(' ', 3);
-			if (parts.Length >= 3 && int.TryParse(parts[0], out int index))
+			if (parts.Length < 3 || !int.TryParse(parts[0], out int index))
 			{
-				return new UpdateCommand
-				{
-					TodoList = AppInfo.Todos,
-					TaskIndex = index - 1,
-					NewText = parts[2].Trim('"')
-				};
+				throw new InvalidCommandException("Используйте: update [номер] \"новый текст\"");
 			}
-			return null;
+
+			index -= 1;
+			if (index < 0 || index >= AppInfo.Todos.Count)
+			{
+				throw new TaskNotFoundException($"Ошибка: Задача №{index + 1} не найдена.");
+			}
+
+			return new UpdateCommand
+			{
+				TodoList = AppInfo.Todos,
+				TaskIndex = index,
+				NewText = parts[2].Trim('"')
+			};
 		}
 
 		private static ICommand ParseReadCommand(string args)
@@ -138,12 +144,13 @@ namespace TodoList
 
 			if (int.TryParse(args.Trim(), out int index))
 			{
-				if (index < 1 || index > AppInfo.Todos.Count)
+				index -= 1;
+				if (index < 0 || index >= AppInfo.Todos.Count)
 				{
-					throw new TaskNotFoundException("Ошибка: Задача №" + index + " не найдена.");
+					throw new TaskNotFoundException($"Ошибка: Задача №{index + 1} не найдена.");
 				}
 
-				return new ReadCommand { TodoList = AppInfo.Todos, TaskIndex = index - 1 };
+				return new ReadCommand { TodoList = AppInfo.Todos, TaskIndex = index };
 			}
 
 			throw new InvalidCommandException("Для чтения задачи введите её номер числом.");
@@ -241,10 +248,11 @@ namespace TodoList
 
 			return command;
 		}
-
 		private static bool ParseTaskIndex(string args, out int index)
 		{
 			index = -1;
+			if (string.IsNullOrWhiteSpace(args)) return false;
+
 			if (int.TryParse(args.Trim(), out int parsedIndex))
 			{
 				index = parsedIndex - 1;
