@@ -2,6 +2,8 @@
 using System.IO;
 using TodoList.Commands;
 using ToDoList;
+using TodoList.Exceptions;
+
 
 namespace TodoList
 {
@@ -22,26 +24,43 @@ namespace TodoList
 
 			while (true)
 			{
-				Console.Write("Введите команду: ");
-				string input = Console.ReadLine()?.Trim();
-
-				if (string.IsNullOrEmpty(input) || input.Equals("exit", StringComparison.OrdinalIgnoreCase))
+				try
 				{
-					break;
-				}
+					Console.Write("> ");
+					string input = Console.ReadLine();
 
-				ICommand command = CommandParser.Parse(input);
-				if (command != null)
-				{
-					command.Execute();
+					if (string.IsNullOrWhiteSpace(input)) continue;
 
-					if (command is IUndo)
+					var command = CommandParser.Parse(input);
+
+					if (command != null)
 					{
-						AppInfo.undoStack.Push(command);
+						command.Execute();
+
+						if (command is IUndo)
+						{
+							AppInfo.undoStack.Push(command);
+						}
+
+						SaveData();
 					}
 				}
-
-				SaveData();
+				catch (InvalidCommandException ex)
+				{
+					Console.WriteLine("Ошибка команды: " + ex.Message);
+				}
+				catch (TaskNotFoundException ex)
+				{
+					Console.WriteLine("Ошибка данных: " + ex.Message);
+				}
+				catch (AuthenticationException ex)
+				{
+					Console.WriteLine("Ошибка доступа: " + ex.Message);
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine("Критическая ошибка: " + ex.Message);
+				}
 			}
 		}
 

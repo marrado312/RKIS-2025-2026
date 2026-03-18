@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TodoList.Commands;
+using TodoList.Exceptions;
 
 namespace TodoList
 {
@@ -130,12 +131,22 @@ namespace TodoList
 
 		private static ICommand ParseReadCommand(string args)
 		{
-			var command = new ReadCommand { TodoList = AppInfo.Todos };
+			if (string.IsNullOrWhiteSpace(args))
+			{
+				throw new InvalidCommandException("Номер задачи не может быть пустым.");
+			}
 
-			if (ParseTaskIndex(args, out int index))
-				command.TaskIndex = index;
+			if (int.TryParse(args.Trim(), out int index))
+			{
+				if (index < 1 || index > AppInfo.Todos.Count)
+				{
+					throw new TaskNotFoundException("Ошибка: Задача №" + index + " не найдена.");
+				}
 
-			return command;
+				return new ReadCommand { TodoList = AppInfo.Todos, TaskIndex = index - 1 };
+			}
+
+			throw new InvalidCommandException("Для чтения задачи введите её номер числом.");
 		}
 
 		private static ICommand ParseStatusCommand(string args)
@@ -167,8 +178,8 @@ namespace TodoList
 		private static ICommand ParseSearchCommand(string args)
 		{
 			var command = new SearchCommand { TodoList = AppInfo.Todos };
+			var parts = args.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-			var parts = args.Split(' ');
 			for (int i = 0; i < parts.Length; i++)
 			{
 				string arg = parts[i];
@@ -189,30 +200,42 @@ namespace TodoList
 				{
 					command.Status = parts[++i];
 				}
-				else if (arg == "--from" && i + 1 < parts.Length)
+				else if (arg == "--from")
 				{
-					if (DateTime.TryParseExact(parts[++i], "yyyy-MM-dd", null,
-						System.Globalization.DateTimeStyles.None, out var date))
+					if (i + 1 < parts.Length && DateTime.TryParse(parts[++i], out var date))
+					{
 						command.FromDate = date;
+					}
+					else
+					{
+						throw new InvalidCommandException("Неверный формат даты --from. Используйте ГГГГ-ММ-ДД");
+					}
 				}
-				else if (arg == "--to" && i + 1 < parts.Length)
+				else if (arg == "--to")
 				{
-					if (DateTime.TryParseExact(parts[++i], "yyyy-MM-dd", null,
-						System.Globalization.DateTimeStyles.None, out var date))
+					if (i + 1 < parts.Length && DateTime.TryParse(parts[++i], out var date))
+					{
 						command.ToDate = date;
+					}
+					else
+					{
+						throw new InvalidCommandException("Неверный формат даты --to. Используйте ГГГГ-ММ-ДД");
+					}
 				}
-				else if (arg == "--sort" && i + 1 < parts.Length)
+				else if (arg == "--top")
 				{
-					command.SortBy = parts[++i];
+					if (i + 1 < parts.Length && int.TryParse(parts[++i], out int top))
+					{
+						command.TopCount = top;
+					}
+					else
+					{
+						throw new InvalidCommandException("Параметр --top должен быть числом.");
+					}
 				}
 				else if (arg == "--desc")
 				{
 					command.Descending = true;
-				}
-				else if (arg == "--top" && i + 1 < parts.Length)
-				{
-					if (int.TryParse(parts[++i], out int top))
-						command.TopCount = top;
 				}
 			}
 
