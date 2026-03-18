@@ -12,9 +12,9 @@ namespace TodoList
 	}
 	public class TodoItem
 	{
-		public string Text { get; private set; }
-		public TodoStatus Status { get; private set; }
-		public DateTime LastUpdate { get; private set; }
+		public string Text { get;  set; }
+		public TodoStatus Status { get;  set; }
+		public DateTime LastUpdate { get;  set; }
 
 		public TodoItem(string text)
 		{

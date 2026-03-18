@@ -1,4 +1,5 @@
 ﻿using System;
+using TodoList.Exceptions;
 
 namespace TodoList.Commands
 {
@@ -6,18 +7,16 @@ namespace TodoList.Commands
 	{
 		public void Execute()
 		{
-			if (AppInfo.undoStack != null && AppInfo.undoStack.Count > 0)
+			if (AppInfo.undoStack.Count == 0)
 			{
-				ICommand lastCommand = AppInfo.undoStack.Pop();
-
-				if (lastCommand is IUndo undoableCommand)
-				{
-					undoableCommand.Unexecute();
-				}
+				throw new InvalidCommandException("История отмены пуста.");
 			}
-			else
+
+			var command = AppInfo.undoStack.Pop();
+			if (command is IUndo undoable)
 			{
-				Console.WriteLine("История команд пуста.");
+				undoable.Unexecute();
+				AppInfo.redoStack.Push(command);
 			}
 		}
 	}

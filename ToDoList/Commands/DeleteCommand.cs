@@ -1,4 +1,5 @@
 ﻿using System;
+using TodoList.Exceptions;
 
 namespace TodoList.Commands
 {
@@ -11,6 +12,10 @@ namespace TodoList.Commands
 
 		public void Execute()
 		{
+			if (TaskIndex < 0 || TaskIndex >= AppInfo.Todos.Count)
+			{
+				throw new TaskNotFoundException($"Задача с номером {TaskIndex + 1} не существует.");
+			}
 			deletedIndex = TaskIndex;
 			deletedItem = TodoList[TaskIndex];
 			TodoList.Delete(TaskIndex);

@@ -32,7 +32,7 @@ namespace TodoList
 
 		public static ICommand Parse(string inputString)
 		{
-			if (string.IsNullOrEmpty(inputString))
+			if (string.IsNullOrWhiteSpace(inputString))
 				return null;
 
 			string[] parts = inputString.Split(' ', 2);
@@ -49,7 +49,7 @@ namespace TodoList
 				throw new AuthenticationException("Сначала создайте профиль командой profile.");
 			}
 
-			throw new InvalidCommandException($"Команда '{commandName}' не найдена.");
+			return handler(arguments);
 		}
 
 		private static ICommand ParseViewCommand(string args)
@@ -158,7 +158,7 @@ namespace TodoList
 
 		private static ICommand ParseStatusCommand(string args)
 		{
-			string[] parts = args.Split(' ');
+			string[] parts = args.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
 			if (parts.Length >= 2 && int.TryParse(parts[0], out int index))
 			{
 				string statusStr = parts[1].ToLower();
@@ -169,17 +169,23 @@ namespace TodoList
 					"completed" => TodoStatus.Completed,
 					"postponed" => TodoStatus.Postponed,
 					"failed" => TodoStatus.Failed,
-					_ => throw new ArgumentException($"Неверный статус: {statusStr}")
+					_ => throw new InvalidCommandException($"Неверный статус: {statusStr}")
 				};
+
+				int actualIndex = index - 1;
+				if (actualIndex < 0 || actualIndex >= AppInfo.Todos.Count)
+				{
+					throw new TaskNotFoundException($"Ошибка: Задача №{index} не найдена.");
+				}
 
 				return new StatusCommand
 				{
 					TodoList = AppInfo.Todos,
-					TaskIndex = index - 1,
+					TaskIndex = actualIndex,
 					NewStatus = newStatus
 				};
 			}
-			return null;
+			throw new InvalidCommandException("Некорректный формат. Используйте: status [номер] [статус]");
 		}
 
 		private static ICommand ParseSearchCommand(string args)
@@ -189,7 +195,7 @@ namespace TodoList
 
 			for (int i = 0; i < parts.Length; i++)
 			{
-				string arg = parts[i];
+				string arg = parts[i].ToLower();
 
 				if (arg == "--contains" && i + 1 < parts.Length)
 				{
@@ -244,10 +250,15 @@ namespace TodoList
 				{
 					command.Descending = true;
 				}
+				else
+				{
+					throw new InvalidCommandException($"Неизвестный флаг или некорректный аргумент: {arg}");
+				}
 			}
 
 			return command;
 		}
+
 		private static bool ParseTaskIndex(string args, out int index)
 		{
 			index = -1;

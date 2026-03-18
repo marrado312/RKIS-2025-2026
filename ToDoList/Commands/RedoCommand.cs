@@ -1,4 +1,5 @@
 ﻿using System;
+using TodoList.Exceptions;
 
 namespace TodoList
 {
@@ -6,17 +7,14 @@ namespace TodoList
 	{
 		public void Execute()
 		{
-			if (AppInfo.redoStack.Count > 0)
+			if (AppInfo.redoStack.Count == 0)
 			{
-				ICommand command = AppInfo.redoStack.Pop();
-				command.Execute();
-				AppInfo.undoStack.Push(command);
-				Console.WriteLine("Повторено последнее отмененное действие");
+				throw new InvalidCommandException("Стек повтора пуст. Нечего повторять.");
 			}
-			else
-			{
-				Console.WriteLine("Нет действий для повтора");
-			}
+
+			var command = AppInfo.redoStack.Pop();
+			command.Execute();
+			AppInfo.undoStack.Push(command);
 		}
 	}
 }

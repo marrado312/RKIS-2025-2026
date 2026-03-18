@@ -11,6 +11,10 @@ namespace TodoList.Commands
 
 		public void Execute()
 		{
+			if (TaskIndex < 0 || TaskIndex >= TodoList.Count)
+			{
+				throw new Exception("Ошибка: Задача с таким номером не найдена.");
+			}
 			oldText = TodoList[TaskIndex].Text;
 			TodoList[TaskIndex].Text = NewText;
 			TodoList[TaskIndex].LastUpdate = DateTime.Now;

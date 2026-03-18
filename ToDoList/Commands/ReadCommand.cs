@@ -9,6 +9,10 @@ namespace TodoList
 
 		public void Execute()
 		{
+			if (TaskIndex < 0 || TaskIndex >= TodoList.Count)
+			{
+				throw new Exception("Ошибка: Задача с таким номером не найдена.");
+			}
 			try
 			{
 				TodoList.Read(TaskIndex);
