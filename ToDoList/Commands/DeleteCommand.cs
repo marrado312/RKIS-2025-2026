@@ -1,35 +1,28 @@
 ﻿using System;
 
-namespace TodoList
+namespace TodoList.Commands
 {
-	class DeleteCommand : ICommand, IUndo
+	public class DeleteCommand : ICommand, IUndo
 	{
 		public TodoList TodoList { get; set; }
 		public int TaskIndex { get; set; }
-		public TodoItem deletedItem;
-		public int deletedIndex;
+		private TodoItem deletedItem;
+		private int deletedIndex;
 
 		public void Execute()
 		{
-			try
-			{
-				deletedIndex = TaskIndex;
-				deletedItem = TodoList[TaskIndex];
-
-				TodoList.Delete(TaskIndex);
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"Ошибка: {ex.Message}");
-			}
+			deletedIndex = TaskIndex;
+			deletedItem = TodoList[TaskIndex];
+			TodoList.Delete(TaskIndex);
+			Console.WriteLine("Задача удалена.");
 		}
 
 		public void Unexecute()
 		{
 			if (deletedItem != null)
 			{
-				TodoList.Add(deletedItem);
-				Console.WriteLine($"Восстановлена удаленная задача: {deletedItem.Text}");
+				TodoList.Insert(deletedIndex, deletedItem);
+				Console.WriteLine($"Отмена: восстановлена задача '{deletedItem.Text}'");
 			}
 		}
 	}

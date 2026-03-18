@@ -1,40 +1,27 @@
 ﻿using System;
 
-namespace TodoList
+namespace TodoList.Commands
 {
-	class UpdateCommand : ICommand
+	public class UpdateCommand : ICommand, IUndo
 	{
 		public TodoList TodoList { get; set; }
 		public int TaskIndex { get; set; }
 		public string NewText { get; set; }
-
-		public string oldText;
-		public int updatedIndex;
-
+		private string oldText;
 
 		public void Execute()
 		{
-			try
-			{
-				updatedIndex = TaskIndex;
-				oldText = TodoList[TaskIndex].Text;
-
-				TodoList[TaskIndex].UpdateText(NewText);
-				Console.WriteLine($"Задача {TaskIndex + 1} обновлена: {NewText}");
-			}
-			catch (Exception ex)
-			{
-				Console.WriteLine($"Ошибка: {ex.Message}");
-			}
+			oldText = TodoList[TaskIndex].Text;
+			TodoList[TaskIndex].Text = NewText;
+			TodoList[TaskIndex].LastUpdate = DateTime.Now;
+			Console.WriteLine("Задача обновлена.");
 		}
 
 		public void Unexecute()
 		{
-			if (oldText != null)
-			{
-				TodoList[updatedIndex].UpdateText(oldText);
-				Console.WriteLine($"Отменено изменение задачи: восстановлен предыдущий текст");
-			}
+			TodoList[TaskIndex].Text = oldText;
+			TodoList[TaskIndex].LastUpdate = DateTime.Now;
+			Console.WriteLine("Отмена: текст задачи возвращен.");
 		}
 	}
 }
