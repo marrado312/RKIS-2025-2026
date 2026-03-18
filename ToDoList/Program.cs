@@ -57,10 +57,15 @@ namespace TodoList
 				{
 					Console.WriteLine("Ошибка доступа: " + ex.Message);
 				}
+				catch (InvalidArgumentException ex)
+				{
+					Console.WriteLine("Ошибка аргумента: " + ex.Message);
+				}
 				catch (Exception ex)
 				{
 					Console.WriteLine("Критическая ошибка: " + ex.Message);
 				}
+				
 			}
 		}
 
