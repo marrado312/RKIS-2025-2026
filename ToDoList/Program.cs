@@ -66,25 +66,31 @@ namespace TodoList
 
 		static void CreateUser()
 		{
-			Console.Write("Введите ваше имя: ");
-			string firstName = Console.ReadLine();
-			if (string.IsNullOrEmpty(firstName))
+			if (userProfile != null)
 			{
-				Console.WriteLine("Имя не может быть пустым");
-				return;
+				throw new DuplicateLoginException("Профиль уже существует.");
 			}
-			Console.Write("Введите вашу Фамилию: ");
+
+			Console.Write("Введите имя: ");
+			string firstName = Console.ReadLine();
+			if (string.IsNullOrWhiteSpace(firstName))
+			{
+				throw new InvalidArgumentException("Имя не может быть пустым.");
+			}
+
+			Console.Write("Введите фамилию: ");
 			string lastName = Console.ReadLine();
 
-			Console.Write("Введите вашу дату рождения: ");
-			string birthYearInput = Console.ReadLine();
-			if (!int.TryParse(birthYearInput, out int birthYear) || birthYear <= 0)
+			Console.Write("Введите год рождения: ");
+			string yearInput = Console.ReadLine();
+			if (!int.TryParse(yearInput, out int birthYear) || birthYear < 1900 || birthYear > DateTime.Now.Year)
 			{
-				Console.WriteLine("Введите реальный возраст");
-				return;
+				throw new InvalidArgumentException("Некорректный год рождения. Введите число.");
 			}
+
 			userProfile = new Profile(firstName, lastName, birthYear);
-			Console.WriteLine($"Добавлен пользователь {userProfile.GetInfo()}");
+			AppInfo.CurrentProfile = userProfile;
+			Console.WriteLine("Профиль успешно создан.");
 		}
 
 		static void SaveData()
