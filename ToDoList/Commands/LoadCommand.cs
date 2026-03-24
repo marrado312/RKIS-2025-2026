@@ -52,9 +52,19 @@ namespace TodoList.Commands
 			Console.SetCursorPosition(0, startRow + _downloadsCount);
 			Console.WriteLine("Все загрузки завершены.");
 		}
-			private async Task DownloadAsync(int index, int row)
+
+		private async Task DownloadAsync(int index, int row)
+		{
+			Random rnd = new Random();
+
+			for (int current = 0; current <= _totalSize; current++)
 			{
-				await Task.CompletedTask;
+				// бар
+
+					await Task.Delay(rnd.Next(50, 200));
 			}
 		}
 	}
+}
+
+
