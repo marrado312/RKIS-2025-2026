@@ -39,6 +39,22 @@ namespace TodoList.Commands
 			}
 
 			await Task.CompletedTask;
+
+			List<Task> tasks = new List<Task>();
+			for (int i = 0; i < _downloadsCount; i++)
+			{
+				int index = i;
+				tasks.Add(DownloadAsync(index, startRow + index));
+			}
+
+			await Task.WhenAll(tasks);
+
+			Console.SetCursorPosition(0, startRow + _downloadsCount);
+			Console.WriteLine("Все загрузки завершены.");
+		}
+			private async Task DownloadAsync(int index, int row)
+			{
+				await Task.CompletedTask;
+			}
 		}
 	}
-}
