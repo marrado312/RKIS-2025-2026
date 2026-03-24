@@ -23,6 +23,8 @@ namespace TodoList
 			RegisterCommand("read", ParseReadCommand);
 			RegisterCommand("status", ParseStatusCommand);
 			RegisterCommand("search", ParseSearchCommand);
+
+			RegisterCommand("load", input => new LoadCommand(input));
 		}
 
 		public static void RegisterCommand(string commandName, Func<string, ICommand> handler)
@@ -256,7 +258,7 @@ namespace TodoList
 				}
 			}
 
-			return command;
+			return command;		
 		}
 
 		private static bool ParseTaskIndex(string args, out int index)
