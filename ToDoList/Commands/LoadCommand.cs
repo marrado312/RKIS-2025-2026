@@ -9,6 +9,7 @@ namespace TodoList.Commands
 	{
 		private readonly int _downloadsCount;
 		private readonly int _totalSize;
+		private static readonly object _consoleLock = new object();
 
 		public LoadCommand(string args)
 		{
@@ -38,8 +39,6 @@ namespace TodoList.Commands
 				Console.WriteLine();
 			}
 
-			await Task.CompletedTask;
-
 			List<Task> tasks = new List<Task>();
 			for (int i = 0; i < _downloadsCount; i++)
 			{
@@ -59,12 +58,28 @@ namespace TodoList.Commands
 
 			for (int current = 0; current <= _totalSize; current++)
 			{
-				// бар
+				int percent = (current * 100) / _totalSize;
+				string bar = GenerateProgressBar(index, percent);
 
-					await Task.Delay(rnd.Next(50, 200));
+				lock (_consoleLock)
+				{
+					Console.SetCursorPosition(0, row);
+					Console.Write(bar);
+				}
+
+				await Task.Delay(rnd.Next(50, 200));
 			}
+		}
+
+		private string GenerateProgressBar(int index, int percent)
+		{
+			int totalChunks = 20;
+			int filledChunks = percent / 5;
+
+			string filled = new string('#', filledChunks);
+			string empty = new string('-', totalChunks - filledChunks);
+
+			return $"Загрузка {index + 1}: [{filled}{empty}] {percent}%";
 		}
 	}
 }
-
-
