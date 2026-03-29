@@ -13,12 +13,15 @@ namespace TodoList
 		static string dataDir = Path.Combine(Directory.GetCurrentDirectory(), "data");
 		static string profileFilePath = Path.Combine(dataDir, "profile.txt");
 		static string todoFilePath = Path.Combine(dataDir, "todo.csv");
+		static  FileManager fileManager = new FileManager();
+
+
 
 		static void Main(string[] args)
 		{
 			Console.WriteLine("Работу выполнили Фучаджи и Клюев");
 
-			FileManager.EnsureDataDirectory(dataDir);
+			fileManager.EnsureDataDirectory(dataDir);
 			LoadData();
 			Console.WriteLine("Введите help для вывода доступных команд");
 
@@ -101,9 +104,9 @@ namespace TodoList
 		static void SaveData()
 		{
 			if (userProfile != null)
-				FileManager.SaveProfile(userProfile, profileFilePath);
+				fileManager.SaveProfile(userProfile, profileFilePath);
 
-			FileManager.SaveTodos(AppInfo.Todos, todoFilePath);
+			fileManager.SaveTodos(AppInfo.Todos, todoFilePath);
 		}
 
 		static void LoadData()
@@ -111,14 +114,14 @@ namespace TodoList
 			if (AppInfo.Todos == null)
 				AppInfo.Todos = new TodoList();
 
-			FileManager.EnsureDataDirectory(dataDir);
+			fileManager.EnsureDataDirectory(dataDir);
 
 			if (!File.Exists(profileFilePath))
 				File.WriteAllText(profileFilePath, "Default User");
 			if (!File.Exists(todoFilePath))
 				File.WriteAllText(todoFilePath, "");
 
-			userProfile = FileManager.LoadProfile(profileFilePath);
+			userProfile = fileManager.LoadProfile(profileFilePath);
 			AppInfo.CurrentProfile = userProfile;
 
 			if (userProfile == null)
@@ -130,7 +133,7 @@ namespace TodoList
 				Console.WriteLine($"Загружен профиль: {userProfile.GetInfo()}");
 			}
 
-			var loadedTodos = FileManager.LoadTodos(todoFilePath);
+			var loadedTodos = fileManager.LoadTodos(todoFilePath);
 			if (loadedTodos != null && loadedTodos.Count > 0)
 			{
 				AppInfo.Todos = loadedTodos;

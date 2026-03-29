@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TodoList
+namespace ToDoList
 {
 	public class SystemClock : IClock
 	{

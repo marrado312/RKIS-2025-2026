@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 using Moq;
-using TodoList;
+using ToDoList;
 
 namespace TodoList.Tests
 {
