@@ -2,7 +2,7 @@
 
 namespace TodoList
 {
-	class ViewCommand : ICommand
+	public class ViewCommand : ICommand
 	{
 		public TodoList TodoList { get; set; }
 		public bool ShowIndex { get; set; }

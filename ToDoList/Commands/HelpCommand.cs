@@ -2,7 +2,7 @@
 
 namespace TodoList
 {
-	class HelpCommand : ICommand
+	public class HelpCommand : ICommand
 	{
 		public void Execute()
 		{
