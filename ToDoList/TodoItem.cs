@@ -10,29 +10,32 @@ namespace TodoList
 		Postponed, // отложено
 		Failed // провалено
 	}
+
 	public class TodoItem
 	{
-		public string Text { get;  set; }
-		public TodoStatus Status { get;  set; }
-		public DateTime LastUpdate { get;  set; }
+		private readonly IClock _clock;
+		public string Text { get; set; }
+		public TodoStatus Status { get; set; }
+		public DateTime LastUpdate { get; set; }
 
-		public TodoItem(string text)
+		public TodoItem(string text, IClock clock = null)
 		{
+			_clock = clock ?? new SystemClock();
 			this.Text = text;
 			this.Status = TodoStatus.NotStarted;
-			this.LastUpdate = DateTime.Now;
+			this.LastUpdate = _clock.Now;
 		}
 
 		public void SetStatus(TodoStatus status)
 		{
 			this.Status = status;
-			this.LastUpdate = DateTime.Now;
+			this.LastUpdate = _clock.Now;
 		}
 
 		public void UpdateText(string newText)
 		{
 			this.Text = newText;
-			this.LastUpdate = DateTime.Now;
+			this.LastUpdate = _clock.Now;
 		}
 
 		public string GetShortInfo()
@@ -42,12 +45,14 @@ namespace TodoList
 			string date = LastUpdate.ToString("dd.MM.yyyy HH:mm");
 			return $"{shortText} | {status} | {date}";
 		}
+
 		public string GetFullInfo()
 		{
 			string statusText = GetStatusText();
 			string dateText = LastUpdate.ToString("dd.MM.yyyy HH:mm");
 			return $"Текст: {Text}\nСтатус: {statusText}\nДата изменения: {dateText}";
 		}
+
 		public string GetStatusText()
 		{
 			return Status switch
