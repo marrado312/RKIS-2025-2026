@@ -1,5 +1,6 @@
 using System;
 using Xunit;
+using Moq;
 using TodoList;
 
 namespace TodoList.Tests
@@ -26,6 +27,35 @@ namespace TodoList.Tests
 			string result = item.GetShortInfo();
 
 			Assert.StartsWith(expected, result);
+		}
+
+		[Fact]
+		public void Constructor_WhenCreated_SetsLastUpdateToFixedTime()
+		{
+			var fixedTime = new DateTime(2026, 3, 29, 12, 0, 0);
+			var clockMock = new Mock<IClock>();
+			clockMock.Setup(c => c.Now).Returns(fixedTime);
+
+			var item = new TodoItem("Задача Ильи", clockMock.Object);
+
+			Assert.Equal(fixedTime, item.LastUpdate);
+		}
+
+		[Fact]
+		public void SetStatus_WhenCalled_UpdatesLastUpdate()
+		{
+			var startTime = new DateTime(2026, 3, 29, 10, 0, 0);
+			var updateTime = new DateTime(2026, 3, 29, 11, 0, 0);
+			var clockMock = new Mock<IClock>();
+			clockMock.SetupSequence(c => c.Now)
+				.Returns(startTime)
+				.Returns(updateTime);
+
+			var item = new TodoItem("Тест", clockMock.Object);
+
+			item.SetStatus(TodoStatus.Completed);
+
+			Assert.Equal(updateTime, item.LastUpdate);
 		}
 	}
 }
