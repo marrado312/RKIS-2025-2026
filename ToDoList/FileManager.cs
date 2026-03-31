@@ -1,83 +1,116 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using TodoList.Interfaces;
 using ToDoList;
 
 namespace TodoList
 {
-	public class FileManager
+	public class FileManager : IDataStorage
 	{
-		private readonly IFileSystem _fileSystem;
+		private readonly byte[] _key;
+		private readonly byte[] _iv;
+		private const string ProfilesFile = "profiles.dat";
 
-		public FileManager(IFileSystem fileSystem = null)
+		public FileManager(string key, string iv)
 		{
-			_fileSystem = fileSystem ?? new SystemFileSystem();
+			_key = Encoding.UTF8.GetBytes(key);
+			_iv = Encoding.UTF8.GetBytes(iv);
 		}
 
-		public void EnsureDataDirectory(string dirPath)
+		public void SaveProfiles(IEnumerable<Profile> profiles)
 		{
-			if (!_fileSystem.DirectoryExists(dirPath))
+			try
 			{
-				_fileSystem.CreateDirectory(dirPath);
+				using var fs = new FileStream(ProfilesFile, FileMode.Create, FileAccess.Write);
+				using var bs = new BufferedStream(fs);
+
+				using var aes = Aes.Create();
+				aes.Key = _key;
+				aes.IV = _iv;
+
+				using var encryptor = aes.CreateEncryptor();
+				using var cs = new CryptoStream(bs, encryptor, CryptoStreamMode.Write);
+				using var writer = new StreamWriter(cs);
+
+				string json = JsonSerializer.Serialize(profiles);
+				writer.Write(json);
+			}
+			catch (IOException ex)
+			{
+				throw new StorageException("Ошибка записи в файл профилей", ex);
+			}
+			catch (Exception ex)
+			{
+				throw new StorageException("Непредвиденная ошибка при сохранении", ex);
+			}
+		}
+		
+
+		public IEnumerable<Profile> LoadProfiles()
+		{
+			if (!File.Exists(ProfilesFile))
+			{
+				return new List<Profile>();
+			}
+
+			try
+			{
+				using var fs = new FileStream(ProfilesFile, FileMode.Open, FileAccess.Read);
+				using var bs = new BufferedStream(fs);
+
+				using var aes = Aes.Create();
+				aes.Key = _key;
+				aes.IV = _iv;
+
+				using var decryptor = aes.CreateDecryptor();
+				using var cs = new CryptoStream(bs, decryptor, CryptoStreamMode.Read);
+				using var reader = new StreamReader(cs);
+
+				string json = reader.ReadToEnd();
+				return JsonSerializer.Deserialize<List<Profile>>(json) ?? new List<Profile>();
+			}
+			catch (CryptographicException ex)
+			{
+				throw new StorageException("Ошибка расшифровки данных. Проверьте ключи.", ex);
+			}
+			catch (Exception ex)
+			{
+				throw new StorageException("Не удалось загрузить профили из файла", ex);
 			}
 		}
 
-		public void SaveProfile(Profile profile, string filePath)
+		public void SaveTodos(Guid userId, IEnumerable<TodoItem> todos)
 		{
-			string data = $"{profile.FirstName};{profile.LastName};{profile.BirthYear}";
-			_fileSystem.WriteAllText(filePath, data);
-		}
-
-		public Profile LoadProfile(string filePath)
-		{
-			if (!_fileSystem.Exists(filePath)) return null;
-			string content = _fileSystem.ReadAllText(filePath);
-			if (string.IsNullOrEmpty(content)) return null;
-			string[] parts = content.Split(';');
-			if (parts.Length < 3) return null;
-			return new Profile(parts[0], parts[1], int.Parse(parts[2]));
-		}
-
-		public void SaveTodos(TodoList todos, string filePath)
-		{
-			string[] lines = new string[todos.Count];
-			for (int i = 0; i < todos.Count; i++)
+			string fileName = $"{userId}.dat";
+			try
 			{
-				var todo = todos[i];
-				string text = EscapeCsv(todo.Text);
-				lines[i] = $"{i};{text};{todo.Status};{todo.LastUpdate:yyyy-MM-ddTHH:mm:ss}";
-			}
-			_fileSystem.WriteAllLines(filePath, lines);
-		}
+				using var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write);
+				using var bs = new BufferedStream(fs);
 
-		public TodoList LoadTodos(string filePath)
-		{
-			var todoList = new TodoList();
-			if (!_fileSystem.Exists(filePath)) return todoList;
-			string[] lines = _fileSystem.ReadAllLines(filePath);
-			foreach (var line in lines)
+				using var aes = Aes.Create();
+				aes.Key = _key;
+				aes.IV = _iv;
+
+				using var encryptor = aes.CreateEncryptor();
+				using var cs = new CryptoStream(bs, encryptor, CryptoStreamMode.Write);
+				using var writer = new StreamWriter(cs);
+
+				string json = JsonSerializer.Serialize(todos);
+				writer.Write(json);
+			}
+			catch (Exception ex)
 			{
-				string[] parts = line.Split(';');
-				if (parts.Length < 4) continue;
-				string text = UnescapeCsv(parts[1]);
-				TodoStatus status = (TodoStatus)Enum.Parse(typeof(TodoStatus), parts[2]);
-				var todo = new TodoItem(text);
-				todo.SetStatus(status);
-				todoList.AddTodoFromFile(todo);
+				throw new StorageException($"Ошибка при сохранении задач пользователя {userId}", ex);
 			}
-			return todoList;
 		}
 
-		private string EscapeCsv(string text)
+		public IEnumerable<TodoItem> LoadTodos(Guid userId)
 		{
-			if (text == null) return "\"\"";
-			return "\"" + text.Replace("\"", "\"\"").Replace("\n", "\\n") + "\"";
-		}
-
-		private string UnescapeCsv(string text)
-		{
-			if (text == null) return "";
-			return text.Trim('"').Replace("\\n", "\n").Replace("\"\"", "\"");
+			return new List<TodoItem>();
 		}
 	}
 }
