@@ -12,12 +12,21 @@ namespace TodoList
 		Failed // провалено
 	}
 
+
 	public class TodoItem
 	{
-		private readonly IClock _clock;
+		public string Title { get; set; }
+
+		public bool IsDone { get; set; }
+
+		public readonly IClock _clock;
 		public string Text { get; set; }
 		public TodoStatus Status { get; set; }
 		public DateTime LastUpdate { get; set; }
+		public TodoItem()
+		{
+
+		}
 
 		public TodoItem(string text, IClock clock = null)
 		{

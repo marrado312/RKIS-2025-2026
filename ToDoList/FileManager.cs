@@ -131,7 +131,7 @@ namespace TodoList
 			}
 			catch (Exception ex)
 			{
-				throw new StorageException($"Ошибка при загрузке задач пользователя {userId}", ex);
+				throw new StorageException("Не удалось загрузить профили", ex);
 			}
 		}
 	}

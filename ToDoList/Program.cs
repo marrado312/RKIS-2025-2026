@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
 using TodoList.Commands;
-using ToDoList;
 using TodoList.Exceptions;
+using TodoList.Interfaces;
+using ToDoList;
 
 
 namespace TodoList
@@ -10,18 +11,24 @@ namespace TodoList
 	class Program
 	{
 		static Profile userProfile;
+		static IDataStorage storage;
 		static string dataDir = Path.Combine(Directory.GetCurrentDirectory(), "data");
 		static string profileFilePath = Path.Combine(dataDir, "profile.txt");
 		static string todoFilePath = Path.Combine(dataDir, "todo.csv");
-		static  FileManager fileManager = new FileManager();
+
+
 
 
 
 		static void Main(string[] args)
 		{
-			Console.WriteLine("Работу выполнили Фучаджи и Клюев");
+			Console.WriteLine("Работу выполнили Фучаджи");
 
-			fileManager.EnsureDataDirectory(dataDir);
+			string key = "12345678901234567890123456789012";
+			string iv = "1234567890123456";
+			storage = new FileManager(key, iv);
+
+
 			LoadData();
 			Console.WriteLine("Введите help для вывода доступных команд");
 
@@ -68,7 +75,7 @@ namespace TodoList
 				{
 					Console.WriteLine("Критическая ошибка: " + ex.Message);
 				}
-				
+
 			}
 		}
 
@@ -98,15 +105,17 @@ namespace TodoList
 
 			userProfile = new Profile(firstName, lastName, birthYear);
 			AppInfo.CurrentProfile = userProfile;
+			SaveData();
 			Console.WriteLine("Профиль успешно создан.");
 		}
 
 		static void SaveData()
 		{
 			if (userProfile != null)
-				fileManager.SaveProfile(userProfile, profileFilePath);
+				storage.SaveProfiles(new List<Profile> { userProfile });
+			storage.SaveProfiles(new List<Profile> { userProfile });
 
-			fileManager.SaveTodos(AppInfo.Todos, todoFilePath);
+			storage.SaveTodos(userProfile.Id, AppInfo.Todos);
 		}
 
 		static void LoadData()
@@ -114,15 +123,12 @@ namespace TodoList
 			if (AppInfo.Todos == null)
 				AppInfo.Todos = new TodoList();
 
-			fileManager.EnsureDataDirectory(dataDir);
+			var profiles = storage.LoadProfiles();
 
-			if (!File.Exists(profileFilePath))
-				File.WriteAllText(profileFilePath, "Default User");
-			if (!File.Exists(todoFilePath))
-				File.WriteAllText(todoFilePath, "");
+			var profilesnum = storage.LoadProfiles();
+			Console.WriteLine($"Счетчик: Найдено профилей в файле: {profiles.Count()}");
 
-			userProfile = fileManager.LoadProfile(profileFilePath);
-			AppInfo.CurrentProfile = userProfile;
+			userProfile = profiles.FirstOrDefault();
 
 			if (userProfile == null)
 			{
@@ -130,14 +136,16 @@ namespace TodoList
 			}
 			else
 			{
+				AppInfo.CurrentProfile = userProfile;
 				Console.WriteLine($"Загружен профиль: {userProfile.GetInfo()}");
-			}
 
-			var loadedTodos = fileManager.LoadTodos(todoFilePath);
-			if (loadedTodos != null && loadedTodos.Count > 0)
-			{
-				AppInfo.Todos = loadedTodos;
-				Console.WriteLine($"Загружено задач: {AppInfo.Todos.Count}");
+
+				var loadedTodos = storage.LoadTodos(userProfile.Id);
+				foreach (var todo in loadedTodos)
+				{
+					AppInfo.Todos.Add(todo);
+					Console.WriteLine($"Загружено задач: {AppInfo.Todos.Count}");
+				}
 			}
 		}
 	}
