@@ -48,7 +48,7 @@ namespace TodoList
 				throw new StorageException("Непредвиденная ошибка при сохранении", ex);
 			}
 		}
-		
+
 
 		public IEnumerable<Profile> LoadProfiles()
 		{
@@ -110,7 +110,29 @@ namespace TodoList
 
 		public IEnumerable<TodoItem> LoadTodos(Guid userId)
 		{
-			return new List<TodoItem>();
+			string fileName = $"{userId}.dat";
+			if (!File.Exists(fileName)) return new List<TodoItem>();
+
+			try
+			{
+				using var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read);
+				using var bs = new BufferedStream(fs);
+
+				using var aes = Aes.Create();
+				aes.Key = _key;
+				aes.IV = _iv;
+
+				using var decryptor = aes.CreateDecryptor();
+				using var cs = new CryptoStream(bs, decryptor, CryptoStreamMode.Read);
+				using var reader = new StreamReader(cs);
+
+				string json = reader.ReadToEnd();
+				return JsonSerializer.Deserialize<List<TodoItem>>(json) ?? new List<TodoItem>();
+			}
+			catch (Exception ex)
+			{
+				throw new StorageException($"Ошибка при загрузке задач пользователя {userId}", ex);
+			}
 		}
 	}
 }
