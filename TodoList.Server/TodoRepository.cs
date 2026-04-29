@@ -23,5 +23,38 @@ namespace TodoList.Server
 			Console.WriteLine("=== БАЗА ДАННЫХ ИНИЦИАЛИЗИРОВАНА ===");
 		}
 	}
-}
 
+	public async Task SaveDataAsync(string table, string id, byte[] data)
+		{
+			using var connection = _db.CreateConnection();
+			await connection.OpenAsync();
+
+			var command = connection.CreateCommand();
+			string idColumn = (table == "Users") ? "Id" : "UserId";
+
+			command.CommandText = $"INSERT OR REPLACE INTO {table} ({idColumn}, Data) VALUES (@id, @data)";
+			command.Parameters.AddWithValue("@id", id);
+			command.Parameters.AddWithValue("@data", data);
+
+			await command.ExecuteNonQueryAsync();
+		}
+
+		public async Task<byte[]> GetDataAsync(string table, string id)
+		{
+			using var connection = _db.CreateConnection();
+			await connection.OpenAsync();
+
+			var command = connection.CreateCommand();
+
+			string idColumn = (table == "Users") ? "Id" : "UserId";
+			
+			command.CommandText = $"SELECT Data FROM {table} WHERE {idColumn} = @id";
+			commnand.Parameters.AddWithValue("@id", id);
+
+			using var reader = await command.ExecuteReaderAsync();
+			if (await reader.ReadAsync())
+			{
+				return (byte[])reader["Data"];
+			}
+			return null;
+		}
