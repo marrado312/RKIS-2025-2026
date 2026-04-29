@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TodoList.Commands;
 using TodoList.Exceptions;
 using TodoList.Interfaces;
 using ToDoList;
-
 
 namespace TodoList
 {
@@ -12,22 +13,22 @@ namespace TodoList
 	{
 		static Profile userProfile;
 		static IDataStorage storage;
-		static string dataDir = Path.Combine(Directory.GetCurrentDirectory(), "data");
-		static string profileFilePath = Path.Combine(dataDir, "profile.txt");
-		static string todoFilePath = Path.Combine(dataDir, "todo.csv");
-
-
-
-
+		static ApiDataStorage apiStorage;
+		static SyncCommand syncCommand;
 
 		static void Main(string[] args)
 		{
-			Console.WriteLine("Работу выполнили Фучаджи");
+			Console.WriteLine("Работу выполнил Фучаджи");
 
 			string key = "12345678901234567890123456789012";
 			string iv = "1234567890123456";
-			storage = new FileManager(key, iv);
 
+			var localFileManager = new FileManager(key, iv);
+			storage = localFileManager;
+			AppInfo.Storage = storage;
+
+			apiStorage = new ApiDataStorage(localFileManager);
+			syncCommand = new SyncCommand(apiStorage);
 
 			LoadData();
 			Console.WriteLine("Введите help для вывода доступных команд");
@@ -40,6 +41,15 @@ namespace TodoList
 					string input = Console.ReadLine();
 
 					if (string.IsNullOrWhiteSpace(input)) continue;
+
+					string[] parts = input.Split(' ');
+					string commandName = parts[0].ToLower();
+
+					if (commandName == "sync")
+					{
+						syncCommand.Execute(parts);
+						continue;
+					}
 
 					var command = CommandParser.Parse(input);
 
@@ -59,23 +69,10 @@ namespace TodoList
 				{
 					Console.WriteLine("Ошибка команды: " + ex.Message);
 				}
-				catch (TaskNotFoundException ex)
-				{
-					Console.WriteLine("Ошибка данных: " + ex.Message);
-				}
-				catch (AuthenticationException ex)
-				{
-					Console.WriteLine("Ошибка доступа: " + ex.Message);
-				}
-				catch (InvalidArgumentException ex)
-				{
-					Console.WriteLine("Ошибка аргумента: " + ex.Message);
-				}
 				catch (Exception ex)
 				{
 					Console.WriteLine("Критическая ошибка: " + ex.Message);
 				}
-
 			}
 		}
 
@@ -100,7 +97,7 @@ namespace TodoList
 			string yearInput = Console.ReadLine();
 			if (!int.TryParse(yearInput, out int birthYear) || birthYear < 1900 || birthYear > DateTime.Now.Year)
 			{
-				throw new InvalidArgumentException("Некорректный год рождения. Введите число.");
+				throw new InvalidArgumentException("Некорректный год рождения.");
 			}
 
 			userProfile = new Profile(firstName, lastName, birthYear);
@@ -112,10 +109,10 @@ namespace TodoList
 		static void SaveData()
 		{
 			if (userProfile != null)
+			{
 				storage.SaveProfiles(new List<Profile> { userProfile });
-			storage.SaveProfiles(new List<Profile> { userProfile });
-
-			storage.SaveTodos(userProfile.Id, AppInfo.Todos);
+				storage.SaveTodos(userProfile.Id, AppInfo.Todos);
+			}
 		}
 
 		static void LoadData()
@@ -124,10 +121,6 @@ namespace TodoList
 				AppInfo.Todos = new TodoList();
 
 			var profiles = storage.LoadProfiles();
-
-			var profilesnum = storage.LoadProfiles();
-			Console.WriteLine($"Счетчик: Найдено профилей в файле: {profiles.Count()}");
-
 			userProfile = profiles.FirstOrDefault();
 
 			if (userProfile == null)
@@ -139,12 +132,10 @@ namespace TodoList
 				AppInfo.CurrentProfile = userProfile;
 				Console.WriteLine($"Загружен профиль: {userProfile.GetInfo()}");
 
-
 				var loadedTodos = storage.LoadTodos(userProfile.Id);
 				foreach (var todo in loadedTodos)
 				{
 					AppInfo.Todos.Add(todo);
-					Console.WriteLine($"Загружено задач: {AppInfo.Todos.Count}");
 				}
 			}
 		}
