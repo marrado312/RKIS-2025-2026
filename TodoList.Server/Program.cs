@@ -3,18 +3,24 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Data.Sqlite;
 
 namespace TodoList.Server
 {
 	class Program
 	{
 		private const string Url = "http://localhost:5000/";
+		private static TodoRepository _repo;
 
 		static async Task Main(string[] args)
 		{
 			using var listener = new HttpListener();
 			listener.Prefixes.Add(Url);
 			listener.Start();
+
+			var db = new Database("Data Source=Data/todolist.db");
+			_repo = new TodoRepository(db);
+			await _repo.InitializeAsync();
 
 			Console.WriteLine("=== СЕРВЕР ЗАПУЩЕН ===");
 			Console.WriteLine($"Ожидание на {Url}");
@@ -26,7 +32,7 @@ namespace TodoList.Server
 			}
 		}
 
-		static void HandleRequest(HttpListenerContext context)
+		static async Task HandleRequest(HttpListenerContext context)
 		{
 			var request = context.Request;
 			var response = context.Response;
@@ -34,25 +40,26 @@ namespace TodoList.Server
 
 			try
 			{
-				string fileName = path == "profiles"
-					? "server_profiles.dat"
-					: $"server_todos_{path.Replace("todos/", "")}.dat";
+				string table = path.StartsWith("profiles") ? "Users" : "Todos";
+				string dataId = path.StartsWith("todos/") ? path.Replace("todos/", "") : "global_profile";
 
 				if (request.HttpMethod == "POST")
 				{
-					using (var fileStream = File.Create(fileName))
-					{
-						request.InputStream.CopyTo(fileStream);
-					}
+					using var ms = new MemoryStream();
+					request.InputStream.CopyTo(ms);
+					byte[] data = ms.ToArray();
+
+					await _repo.SaveDataAsync(table, dataId, data);
 					response.StatusCode = (int)HttpStatusCode.OK;
 				}
 				else if (request.HttpMethod == "GET")
 				{
-					if (File.Exists(fileName))
+					byte[] data = await _repo.GetDataAsync(table, dataId);
+
+					if (data != null)
 					{
-						byte[] buffer = File.ReadAllBytes(fileName);
-						response.ContentLength64 = buffer.Length;
-						response.OutputStream.Write(buffer, 0, buffer.Length);
+						response.ContentLength64 = data.Length;
+						response.OutputStream.Write(data, 0, data.Length);
 					}
 					else
 					{
@@ -62,7 +69,7 @@ namespace TodoList.Server
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Ошибка: {ex.Message}");
+				Console.WriteLine($"Ошибка базы данных: {ex.Message}");
 				response.StatusCode = (int)HttpStatusCode.InternalServerError;
 			}
 			finally
