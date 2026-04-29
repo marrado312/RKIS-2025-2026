@@ -22,7 +22,7 @@ namespace TodoList.Server
 
 			Console.WriteLine("=== БАЗА ДАННЫХ ИНИЦИАЛИЗИРОВАНА ===");
 		}
-	}
+	
 
 	public async Task SaveDataAsync(string table, string id, byte[] data)
 		{
@@ -47,9 +47,9 @@ namespace TodoList.Server
 			var command = connection.CreateCommand();
 
 			string idColumn = (table == "Users") ? "Id" : "UserId";
-			
+
 			command.CommandText = $"SELECT Data FROM {table} WHERE {idColumn} = @id";
-			commnand.Parameters.AddWithValue("@id", id);
+			command.Parameters.AddWithValue("@id", id);
 
 			using var reader = await command.ExecuteReaderAsync();
 			if (await reader.ReadAsync())
@@ -58,3 +58,5 @@ namespace TodoList.Server
 			}
 			return null;
 		}
+	}
+}
