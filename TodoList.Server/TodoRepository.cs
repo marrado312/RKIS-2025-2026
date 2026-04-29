@@ -14,7 +14,7 @@ namespace TodoList.Server
 			using var connection = _db.CreateConnection();
 			await connection.OpenAsync();
 
-			var command = connection.CreateCommnand();
+			var command = connection.CreateCommand();
 			command.CommandText = @"
                 CREATE TABLE IF NOT EXISTS Users (Id TEXT PRIMARY KEY, Data BLOB);
                 CREATE TABLE IF NOT EXISTS Todos (UserId TEXT PRIMARY KEY, Data BLOB);";
@@ -24,5 +24,4 @@ namespace TodoList.Server
 		}
 	}
 }
-
 
